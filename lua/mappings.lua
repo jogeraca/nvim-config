@@ -24,13 +24,13 @@ keymap.set("n", "<leader>q", "<cmd>x<cr>", { silent = true, desc = "quit current
 keymap.set("n", "<leader>Q", "<cmd>qa!<cr>", { silent = true, desc = "quit nvim" })
 
 -- Close location list or quickfix list if they are present, see https://superuser.com/q/355325/736190
-keymap.set("n", [[\x]], "<cmd>windo lclose <bar> cclose <cr>", {
+keymap.set("n", "<leader>db", "<cmd>windo lclose <bar> cclose <cr>", {
   silent = true,
   desc = "close qf and location list",
 })
 
 -- Delete a buffer, without closing the window, see https://stackoverflow.com/q/4465095/6064933
-keymap.set("n", [[\d]], "<cmd>bprevious <bar> bdelete #<cr>", {
+keymap.set("n", "<leader>bd", "<cmd>bprevious <bar> bdelete #<cr>", {
   silent = true,
   desc = "delete current buffer",
 })
@@ -130,6 +130,12 @@ keymap.set("x", "c", '"_c')
 -- Remove trailing whitespace characters
 keymap.set("n", "<leader><space>", "<cmd>StripTrailingWhitespace<cr>", { desc = "remove trailing space" })
 
+-- check the syntax group of current cursor position
+keymap.set("n", "<leader>st", "<cmd>call utils#SynGroup()<cr>", { desc = "check syntax group" })
+
+-- select all
+keymap.set("n", "<Leader>sa", "ggVG", { desc = "select all" })
+
 -- Copy entire buffer.
 keymap.set("n", "<leader>y", "<cmd>%yank<cr>", { desc = "yank entire buffer" })
 
@@ -137,31 +143,28 @@ keymap.set("n", "<leader>y", "<cmd>%yank<cr>", { desc = "yank entire buffer" })
 keymap.set("n", "<leader>cl", "<cmd>call utils#ToggleCursorCol()<cr>", { desc = "toggle cursor column" })
 
 -- Move current line up and down
-keymap.set("n", "<A-k>", '<cmd>call utils#SwitchLine(line("."), "up")<cr>', { desc = "move line up" })
-keymap.set("n", "<A-j>", '<cmd>call utils#SwitchLine(line("."), "down")<cr>', { desc = "move line down" })
+keymap.set("n", "<A-n>", '<cmd>call utils#SwitchLine(line("."), "up")<cr>', { desc = "move line up" })
+keymap.set("n", "<A-t>", '<cmd>call utils#SwitchLine(line("."), "down")<cr>', { desc = "move line down" })
 
 -- Move current visual-line selection up and down
-keymap.set("x", "<A-k>", '<cmd>call utils#MoveSelection("up")<cr>', { desc = "move selection up" })
+keymap.set("x", "<A-n>", '<cmd>call utils#MoveSelection("up")<cr>', { desc = "move selection up" })
 
-keymap.set("x", "<A-j>", '<cmd>call utils#MoveSelection("down")<cr>', { desc = "move selection down" })
+keymap.set("x", "<A-t>", '<cmd>call utils#MoveSelection("down")<cr>', { desc = "move selection down" })
 
 -- Replace visual selection with text in register, but not contaminate the register,
 -- see also https://stackoverflow.com/q/10723700/6064933.
 keymap.set("x", "p", '"_c<Esc>p')
 
 -- Go to a certain buffer
+keymap.set("n", "<Tab>", "<cmd>bn<cr>", { desc = "move next buffer" })
+keymap.set("n", "<S-TAB>", "<cmd>bprevious<cr>", { desc = "move previous buffer" })
+
 keymap.set("n", "gb", '<cmd>call buf_utils#GoToBuffer(v:count, "forward")<cr>', {
   desc = "go to buffer (forward)",
 })
 keymap.set("n", "gB", '<cmd>call buf_utils#GoToBuffer(v:count, "backward")<cr>', {
   desc = "go to buffer (backward)",
 })
-
--- Switch windows
-keymap.set("n", "<left>", "<c-w>h")
-keymap.set("n", "<Right>", "<C-W>l")
-keymap.set("n", "<Up>", "<C-W>k")
-keymap.set("n", "<Down>", "<C-W>j")
 
 -- Text objects for URL
 keymap.set({ "x", "o" }, "iu", "<cmd>call text_obj#URL()<cr>", { desc = "URL text object" })
@@ -200,7 +203,7 @@ keymap.set("i", "<A-;>", "<Esc>miA;<Esc>`ii")
 
 -- Go to the beginning and end of current line in insert mode quickly
 keymap.set("i", "<C-A>", "<HOME>")
-keymap.set("i", "<C-E>", "<END>")
+-- keymap.set("i", "<C-E>", "<END>")
 
 -- Go to beginning of command in command-line mode
 keymap.set("c", "<C-A>", "<HOME>")
@@ -246,3 +249,22 @@ keymap.set("n", "<Esc>", function()
 end, {
   desc = "close floating win",
 })
+
+-- Copy namefile with path and only name
+keymap.set("n", "<F2>", function()
+    vim.fn.setreg("+", vim.fn.expand("%:p"))
+    print("Ruta copiada: " .. vim.fn.expand("%:p"))
+end, { desc = "Copiar ruta del archivo" })
+keymap.set("n", "<F3>", function()
+    local relative_path = vim.fn.expand("%:~:.")
+    vim.fn.setreg("+", relative_path)
+    print("Ruta relativa copiada: " .. relative_path)
+end, { desc = "Copiar ruta relativa del archivo" })
+
+keymap.set("n", "<F4>", function()
+    local file_name = vim.fn.expand("%:t")
+    vim.fn.setreg("+", file_name)
+    print("Nombre del archivo copiado: " .. file_name)
+end, { desc = "Copiar nombre del archivo" })
+
+keymap.set("n", "<leader>tr", "<cmd>Telescope lsp_references <cr>", {desc= "Go to incoming calls"})
