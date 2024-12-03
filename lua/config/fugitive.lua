@@ -7,7 +7,18 @@ keymap.set("n", "<leader>gpl", "<cmd>Git pull<cr>", { desc = "Git: pull changes"
 keymap.set("n", "<leader>gpu", "<cmd>15 split|term git push<cr>", { desc = "Git: push changes" })
 keymap.set("v", "<leader>gb", ":Git blame<cr>", { desc = "Git: blame selected line" })
 
--- convert git to Git in command line mode
+keymap.set("n", "<c-p>", ":GitFiles<cr>", { desc = "Open git files" })
+keymap.set("n", "<leader>Gr", ":Gr<cr>", { desc = "Git: git checkout file" })
+
+-- keymap.set("n", "<leader>gsh", "<cmd>Git push<cr>", { desc = "Git: show status" })
+-- keymap.set("n", "<leader>gll", "<cmd>Gpull<cr>", { desc = "Git: show status" })
+-- keymap.set("n", "<leader>Gw", "<cmd>Gwq<cr>", { desc = "Git: show status" })
+-- keymap.set("n", "<leader>Gb", "<cmd>Gwq<cr>", { desc = "Git: show status" })
+-- keymap.set("n", "<leader>Gvh", "<cmd>Gvdiffsplit<cr>", { desc = "Git: show status" })
+-- keymap.set("n", "<leader>Ghh", "<cmd>Gdiffsplit<cr>", { desc = "Git: show status" })
+-- keymap.set("n", "<leader>Ggd", ":silent !tmux popup -K -w '90\\%' -h '90\\%' -R 'git diff'<cr>", { desc = "Git: show status" })
+
+--convert git to Git in command line mode
 vim.fn["utils#Cabbrev"]("git", "Git")
 
 keymap.set("n", "<leader>gbn", function()
