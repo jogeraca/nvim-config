@@ -777,7 +777,7 @@ local plugin_specs = {
 }
 
 require("lazy").setup {
-  spec = plugin_specs,
+  spec = "plugins",
   ui = {
     border = "rounded",
     title = "Plugin Manager",
