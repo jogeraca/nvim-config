@@ -245,9 +245,9 @@ api.nvim_create_autocmd("BufReadPre", {
 
 
   vim.cmd([[
-     command! -nargs=1 rg lua require("telescope.builtin").grep_string({use_regex= true, search = vim.api.nvim_eval('"<args>"') })
+     command! -nargs=1 Rg lua require("telescope.builtin").grep_string({use_regex= true, search = vim.api.nvim_eval('"<args>"') })
   ]])
 
   vim.cmd([[
-    command! -nargs=1 rgex lua require('telescope.builtin').grep_string({ search = '<args>', use_regex = true, additional_args = function() return { '--glob=*.ex' } end })
+    command! -nargs=1 Rgex lua require('telescope.builtin').grep_string({ search = '<args>', use_regex = true, additional_args = function() return { '--glob=*.ex' } end })
   ]])
