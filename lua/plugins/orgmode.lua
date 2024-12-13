@@ -1,4 +1,4 @@
-local org_leader = ".o"
+local org_leader = ";o"
 
 vim.cmd([[
         autocmd FileType org lua whichkey_org()
