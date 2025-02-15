@@ -35,7 +35,7 @@ local plugin_specs = {
   {
     "nvim-treesitter/nvim-treesitter",
     enabled = function()
-      if vim.g.is_mac then
+      if vim.g.is_mac or vim.g.is_linux then
         return true
       end
       return false
@@ -268,6 +268,9 @@ local plugin_specs = {
 
   -- Multiple cursor plugin like Sublime Text?
   -- 'mg979/vim-visual-multi'
+
+  --Autosave files on certain events
+ { "907th/vim-auto-save", event = "InsertEnter" }, 
 
   -- Show undo history visually
   { "simnalamburt/vim-mundo", cmd = { "MundoToggle", "MundoShow" } },
@@ -541,18 +544,18 @@ local plugin_specs = {
     ft = "lua", -- only load on lua files
     opts = {},
   },
-  {
-    "CopilotC-Nvim/CopilotChat.nvim",
-    dependencies = {
-      { "zbirenbaum/copilot.lua" }, -- or github/copilot.vim
-      { "nvim-lua/plenary.nvim" }, -- for curl, log wrapper
-    },
-    opts = {
-      debug = true, -- Enable debugging
-      -- See Configuration section for rest
-    },
-    -- See Commands section for default commands if you want to lazy load on them
-  },
+  -- {
+  --   "CopilotC-Nvim/CopilotChat.nvim",
+  --   dependencies = {
+  --     { "zbirenbaum/copilot.lua" }, -- or github/copilot.vim
+  --     { "nvim-lua/plenary.nvim" }, -- for curl, log wrapper
+  --   },
+  --   opts = {
+  --     debug = true, -- Enable debugging
+  --     -- See Configuration section for rest
+  --   },
+  --   -- See Commands section for default commands if you want to lazy load on them
+  -- },
   {
     "zbirenbaum/copilot.lua",
     cmd = "Copilot",
