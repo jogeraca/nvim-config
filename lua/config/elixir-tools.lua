@@ -1,5 +1,3 @@
--- Enable italic for function names in Elixir
-
 local custom_attach = function(client, bufnr)
   local map_opts = { buffer = bufnr, silent = true }
 
@@ -33,64 +31,34 @@ local custom_attach = function(client, bufnr)
   end
 end
 
-vim.cmd("autocmd FileType elixir highlight ElixirFunction gui=italic,bold")
+-- vim.cmd("autocmd FileType elixir highlight ElixirFunction gui=italic,bold")
+vim.api.nvim_set_hl(0, "ElixirFunction", {italic = true, bold = true})
 
-return {
-  cond = true,
-  "elixir-tools/elixir-tools.nvim",
-  version = "*",
-  event = { "BufReadPre", "BufNewFile" },
-  config = function()
-    local elixir = require("elixir")
-    local elixirls = require("elixir.elixirls")
+local elixirls = require("elixir.elixirls")
 
-    -- local nextls_opts
-    -- if vim.env.NEXTLS_LOCAL == "1" then
-    -- else
-    -- nextls_opts = { enable = true }
-    local nextls = {
-      enable = true, -- defaults to false
-      -- cmd = "bin/nextls",
-      -- port = 9000, -- connect via TCP with the given port. mutually exclusive with `cmd`. defaults to nil
-      -- cmd = "/home/yoser/dot-files/nvim_lua/lazy/elixir-tools.nvim/bin/nextls", -- path to the executable. mutually exclusive with `port`
-      -- init_options = {
-      -- 	mix_env = "dev",
-      -- 	mix_target = "host",
-      -- experimental = {
-      --   completions = {
-      --     enable = true, -- control if completions are enabled. defaults to false
-      --   },
-      -- },
-      -- },
-      -- on_attach = function(client, bufnr)
-      -- custom keybinds
-      -- end,
-    }
-    -- end
-
-    elixir.setup {
-      credo = { enable = false },
-      nextls = nextls,
-      projectionist = {enable = true},
-      elixirls = {
-        -- repo = "elixir-lsp/elixir-ls",
-        enable = true,
-        settings = elixirls.settings {
-          fetchDeps = true,
-          suggestSpecs = true,
-          -- dialyzerEnabled = true,
-          -- enableTestLenses = false,
-          -- signatureAfterComplete = false,
-          -- mixEnv = "dev",
-          -- trace={ server = "off", }
-        },
-        -- log_level = vim.lsp.protocol.MessageType.Log,
-        -- message_level = vim.lsp.protocol.MessageType.Log,
-        on_attach = custom_attach,
-      },
-    }
-  end,
-  dependencies = {
-    "nvim-lua/plenary.nvim",
+require("elixir").setup({
+  nextls = {
+    enable = true,
+    init_options = {
+      experimental = {
+        completions = {
+          enable = true,
+        }
+      }
+    },
   },
-}
+  elixirls = {
+    enable = true,
+    on_attach = custom_attach,
+    trace = {
+                server = "off",
+              },
+    settings = elixirls.settings {
+      dialyzerEnabled = true,
+      fetchDeps = false,
+      enableTestLenses = false,
+      suggestSpecs = true,
+    },
+  },
+  projectionist = {enable = true},
+})
