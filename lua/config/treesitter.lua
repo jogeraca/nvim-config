@@ -13,6 +13,7 @@ local ensure_installed = {
   "markdown",
   "sh",
   "zsh",
+  "elixir"
 }
 
 vim.api.nvim_create_autocmd("FileType", {
