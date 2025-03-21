@@ -12,7 +12,7 @@ gs.setup {
   signcolumn = true, -- Toggle with `:Gitsigns toggle_signs`
   numhl = true, -- Toggle with `:Gitsigns toggle_numhl`
   linehl = false, -- Toggle with `:Gitsigns toggle_linehl`
-  _inline2 = true,
+  -- _inline2 = true,
   current_line_blame = true,
   current_line_blame_formatter = "   <author>, <committer_time:%R> • <summary>",
   on_attach = function(bufnr)

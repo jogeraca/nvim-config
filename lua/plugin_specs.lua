@@ -1,3 +1,5 @@
+local utils = require("utils")
+
 local plugin_dir = vim.fn.stdpath("data") .. "/lazy"
 local lazypath = plugin_dir .. "/lazy.nvim"
 
@@ -295,7 +297,7 @@ local plugin_specs = {
   },
 
   -- Multiple cursor plugin like Sublime Text?
-  -- 'mg979/vim-visual-multi'
+  {'mg979/vim-visual-multi'},
 
   -- Show undo history visually
   { "simnalamburt/vim-mundo", cmd = { "MundoToggle", "MundoShow" } },
@@ -554,24 +556,6 @@ local plugin_specs = {
     },
   },
   {
-    "CopilotC-Nvim/CopilotChat.nvim",
-    dependencies = {
-      { "zbirenbaum/copilot.lua" }, -- or github/copilot.vim
-    },
-    opts = {
-      debug = true, -- Enable debugging
-      -- See Configuration section for rest
-    },
-    cmd = { "CopilotChat" },
-  },
-  {
-    "zbirenbaum/copilot.lua",
-    cmd = "Copilot",
-    config = function()
-      require("copilot").setup {}
-    end,
-  },
-  {
     "smjonas/live-command.nvim",
     -- live-command supports semantic versioning via Git tags
     -- tag = "2.*",
@@ -606,11 +590,101 @@ local plugin_specs = {
     ---@type quicker.SetupOptions
     opts = {},
   },
-}
+},
 
 ---@diagnostic disable-next-line: missing-fields
+-- custom yoser
+  {
+    "yetone/avante.nvim",
+    config = function()
+      require("config.avante")
+    end,
+    event = "VeryLazy",
+    version = "*",
+    build = "make",
+    dependencies = {
+      "nvim-treesitter/nvim-treesitter",
+      "stevearc/dressing.nvim",
+      "nvim-lua/plenary.nvim",
+      "MunifTanjim/nui.nvim",
+      --- The below dependencies are optional,
+      "echasnovski/mini.pick", -- for file_selector provider mini.pick
+      "nvim-telescope/telescope.nvim", -- for file_selector provider telescope
+      "hrsh7th/nvim-cmp", -- autocompletion for avante commands and mentions
+      "ibhagwan/fzf-lua", -- for file_selector provider fzf
+      "nvim-tree/nvim-web-devicons", -- or echasnovski/mini.icons
+      {
+        -- support for image pasting
+        "HakonHarnes/img-clip.nvim",
+        event = "VeryLazy",
+        opts = {
+          -- recommended settings
+          default = {
+            embed_image_as_base64 = false,
+            prompt_for_file_name = false,
+            drag_and_drop = {
+              insert_mode = true,
+            },
+            -- required for Windows users
+            use_absolute_path = true,
+          },
+        },
+      },
+      {
+        -- Make sure to set this up properly if you have lazy=true
+        'MeanderingProgrammer/render-markdown.nvim',
+        opts = {
+          file_types = { "markdown", "Avante" },
+        },
+        ft = { "markdown", "Avante" },
+      },
+    },
+  },
+  {
+    "lukas-reineke/headlines.nvim",
+    dependencies = "nvim-treesitter/nvim-treesitter",
+    config = false,
+  },
+  { 'echasnovski/mini.nvim', version = '*' },
+  {
+    "nvim-orgmode/orgmode",
+    ft = {'org'},
+    dependencies = {
+      { "nvim-treesitter/nvim-treesitter", lazy = true },
+    },
+    event = "VeryLazy",
+    config = function()
+      require("config.orgmode")
+    end,
+  },
+  {
+    "tpope/vim-projectionist", version = "*",
+  },
+  {
+    "elixir-tools/elixir-tools.nvim",
+    version = "*",
+    event = { "BufReadPre", "BufNewFile" },
+    config = function()
+      require("config.elixir-tools")
+    end,
+  },
+  {
+   "nvim-neotest/neotest",
+    dependencies = {
+      "jfpedroza/neotest-elixir",
+      "nvim-lua/plenary.nvim",
+      "nvim-treesitter/nvim-treesitter",
+      "antoinemadec/FixCursorHold.nvim",
+      "nvim-neotest/nvim-nio",
+    },
+    config = function()
+      require("config.neotest")
+    end,
+  }
+}
+
 require("lazy").setup {
-  spec = "plugins",
+  spec = plugin_specs,
   ui = {
     border = "rounded",
     title = "Plugin Manager",
