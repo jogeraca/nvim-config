@@ -12,6 +12,9 @@ call utils#Cabbrev('pud', 'Lazy update')
 call utils#Cabbrev('pc', 'Lazy clean')
 call utils#Cabbrev('ps', 'Lazy sync')
 
+""""""""""""""""""""""""""""""vim-auto-save settings""""""""""""""""""""""""""""""                                            │    32   ▏ \ 'file': ['*.exe', '*.dll', '*.so', '*.o', '*.pyc', '*.jpg', '*.png',
+let g:auto_save = 1  " enable AutoSave on Vim startup
+
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "                      configurations for vim script plugin                  "
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
