@@ -11,8 +11,8 @@ require("fzf-lua").setup {
   },
 }
 
-vim.keymap.set("n", "<leader>ff", "<cmd>FzfLua files<cr>", { desc = "Fuzzy find files" })
-vim.keymap.set("n", "<leader>fg", "<cmd>FzfLua live_grep<cr>", { desc = "Fuzzy grep files" })
+vim.keymap.set("n", "<C-P>", "<cmd>FzfLua files<cr>", { desc = "Fuzzy find files" })
+vim.keymap.set("n", "<S-F>", "<cmd>FzfLua live_grep<cr>", { desc = "Fuzzy grep files with Ctrl+Shift+F" })
 vim.keymap.set("n", "<leader>fh", "<cmd>FzfLua helptags<cr>", { desc = "Fuzzy grep tags in help files" })
 vim.keymap.set("n", "<leader>ft", "<cmd>FzfLua btags<cr>", { desc = "Fuzzy search buffer tags" })
 vim.keymap.set("n", "<leader>fb", "<cmd>FzfLua buffers<cr>", { desc = "Fuzzy search opened buffers" })

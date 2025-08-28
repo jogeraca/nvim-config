@@ -7,7 +7,6 @@ keymap.set("n", "<leader>gpl", "<cmd>Git pull<cr>", { desc = "Git: pull changes"
 keymap.set("n", "<leader>gpu", "<cmd>15 split|term git push<cr>", { desc = "Git: push changes" })
 keymap.set("v", "<leader>gb", ":Git blame<cr>", { desc = "Git: blame selected line" })
 
-keymap.set("n", "<c-p>", ":GitFiles<cr>", { desc = "Open git files" })
 keymap.set("n", "<leader>Gr", ":Gr<cr>", { desc = "Git: git checkout file" })
 
 -- keymap.set("n", "<leader>gsh", "<cmd>Git push<cr>", { desc = "Git: show status" })

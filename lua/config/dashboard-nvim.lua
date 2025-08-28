@@ -24,7 +24,7 @@ conf.center = {
     icon = "󰈞  ",
     desc = "Find  File                              ",
     action = "FzfLua files",
-    key = "<Leader> f f",
+    key = "<control> P",
   },
   {
     icon = "󰈢  ",
