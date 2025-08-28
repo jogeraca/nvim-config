@@ -862,7 +862,44 @@ local plugin_specs = {
     config = function()
       require("config.neotest")
     end,
-  }
+  },
+
+  -- PlantUML syntax highlighting
+  {
+    "aklt/plantuml-syntax",
+    ft = { "plantuml" },
+  },
+  -- PlantUML support with preview
+  {
+    "javiorfo/nvim-soil",
+    lazy = true,
+    ft = "plantuml",
+    config = function()
+      -- The setup function will automatically create PlantUML commands
+      require('soil').setup({
+        -- If you want to use PlantUML jar file instead of the command line tool
+        -- puml_jar_path = "/path/to/plantuml.jar"
+        -- Use nsxiv as image viewer
+        image_viewer = "nsxiv"
+      })
+    end
+  },
+  -- Real-time collaborative editing (pair programming)
+  {
+    "jbyuki/instant.nvim",
+    event = "VeryLazy",
+    config = function()
+      require("config.instant")
+    end,
+  },
+  -- Claude Code integration
+  {
+    "coder/claudecode.nvim",
+    cmd = { "ClaudeCode", "ClaudeChat" },
+    config = function()
+      require("config.claudecode")
+    end,
+  },
 }
 
 require("lazy").setup {
