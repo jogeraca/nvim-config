@@ -268,3 +268,33 @@ keymap.set("n", "<F4>", function()
 end, { desc = "Copiar nombre del archivo" })
 
 keymap.set("n", "<leader>tr", "<cmd>Telescope lsp_references <cr>", {desc= "Go to incoming calls"})
+
+-- Format JSON with jq or python fallback
+keymap.set("n", "<leader>f", function()
+  local filetype = vim.bo.filetype
+  if filetype == "json" then
+    -- Try jq first, fallback to python if jq is not available
+    local jq_available = vim.fn.executable("jq") == 1
+    if jq_available then
+      vim.cmd(":%!jq .")
+    else
+      vim.cmd(":%!python -m json.tool")
+    end
+  else
+    print("JSON formatting only works on JSON files")
+  end
+end, { desc = "Format JSON file" })
+
+-- Open file explorer with ,o
+keymap.set("n", ",e", function()
+  require("nvim-tree.api").tree.toggle()
+end, { 
+  silent = true, 
+  desc = "toggle file explorer" 
+})
+
+-- Claude Code keybindings
+keymap.set("n", "<leader>cc", "<cmd>ClaudeCode<cr>", { desc = "open claude code" })
+keymap.set("n", "<leader>ch", "<cmd>ClaudeChat<cr>", { desc = "open claude chat" })
+keymap.set("v", "<leader>cc", "<cmd>ClaudeCode<cr>", { desc = "send selection to claude" })
+keymap.set("n", "<leader>ca", "<cmd>ClaudeAsk<cr>", { desc = "ask claude about current buffer" })
