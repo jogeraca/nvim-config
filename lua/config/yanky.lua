@@ -9,7 +9,7 @@ require("yanky").setup {
   },
 }
 
-vim.keymap.set({ "n", "x" }, "p", "<Plug>(YankyPutAfter)")
+vim.keymap.set({ "n", "x" }, "yp", "<Plug>(YankyPutAfter)")
 vim.keymap.set({ "n", "x" }, "P", "<Plug>(YankyPutBefore)")
 
 -- cycle through the yank history, only work after paste
