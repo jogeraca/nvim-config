@@ -892,14 +892,6 @@ local plugin_specs = {
       })
     end
   },
-  -- Real-time collaborative editing (pair programming)
-  {
-    "jbyuki/instant.nvim",
-    event = "VeryLazy",
-    config = function()
-      require("config.instant")
-    end,
-  },
   -- Claude Code integration
   {
     "coder/claudecode.nvim",
