@@ -138,51 +138,226 @@ Go to a string starting with `se`
 
 # Shortcuts
 
-Some of the shortcuts I use frequently are listed here. In the following shortcuts, `<leader>` represents ASCII character `,`.
+In the following shortcuts, `<leader>` represents ASCII character `,`.
 
-| Shortcut          | Mode          | platform        | Description                                                              |
-|-------------------|---------------|-----------------|--------------------------------------------------------------------------|
-| `<leader>ff`      | Normal        | Linux/macOS/Win | Fuzzy file searching in a floating window                                |
-| `<leader>fh`      | Normal        | Linux/macOS/Win | Fuzzy help file grepping in a floating window                            |
-| `<leader>fg`      | Normal        | Linux/macOS/Win | Fuzzy project-wide grepping in a floating window                         |
-| `<leader>ft`      | Normal        | Linux/macOS/Win | Fuzzy buffer tag searching in a floating window                          |
-| `<leader>fb`      | Normal        | Linux/macOS/Win | Fuzzy buffer switching in a floating window                              |
-| `<leader><Space>` | Normal        | Linux/macOS/Win | Remove trailing white spaces                                             |
-| `<leader>v`       | Normal        | Linux/macOS/Win | Reselect last pasted text                                                |
-| `<leader>ev`      | Normal        | Linux/macOS/Win | Edit Nvim config in a new tabpage                                        |
-| `<leader>sv`      | Normal        | Linux/macOS/Win | Reload Nvim config                                                       |
-| `<leader>st`      | Normal        | Linux/macOS/Win | Show highlight group for cursor text                                     |
-| `<leader>q`       | Normal        | Linux/macOS/Win | Quit current window                                                      |
-| `<leader>Q`       | Normal        | Linux/macOS/Win | Quit all window and close Nvim                                           |
-| `<leader>w`       | Normal        | Linux/macOS/Win | Save current buffer content                                              |
-| `<leader>y`       | Normal        | Linux/macOS/Win | Copy the content of entire buffer to default register                    |
-| `<leader>cl`      | Normal        | Linux/macOS/Win | Toggle cursor column                                                     |
-| `<leader>cd`      | Normal        | Linux/macOS/Win | Change current working directory to to the dir of current buffer         |
-| `<space>t`        | Normal        | Linux/macOS/Win | Toggle tag window (show project tags in the right window)                |
-| `<leader>gs`      | Normal        | Linux/macOS/Win | Show Git status result                                                   |
-| `<leader>gw`      | Normal        | Linux/macOS/Win | Run Git add for current file                                             |
-| `<leader>gc`      | Normal        | Linux/macOS/Win | Run git commit                                                           |
-| `<leader>gpl`     | Normal        | Linux/macOS/Win | Run git pull                                                             |
-| `<leader>gpu`     | Normal        | Linux/macOS/Win | Run git push                                                             |
-| `<leader>gbd`     | Normal        | Linux/macOS/Win | Delete a branch                                                          |
-| `<leader>gbn`     | Normal        | Linux/macOS/Win | Create a new branch                                                      |
-| `<leader>gl`      | Normal/Visual | Linux/macOS/Win | Get perm link for current/visually-select lines                          |
-| `<leader>gbr`     | Normal        | macOS           | Browse current git repo in browser                                       |
-| `<leader>gb`      | Visual        | macOS           | Blame current line                                                       |
-| `<F9>`            | Normal        | Linux/macOS/Win | Compile&run current source file (for C++, LaTeX, Lua, Python)            |
-| `<F11>`           | Normal        | Linux/macOS/Win | Toggle spell checking                                                    |
-| `<F12>`           | Normal        | Linux/macOS/Win | Toggle paste mode                                                        |
-| `\x`              | Normal        | Linux/macOS/Win | Close location or quickfix window                                        |
-| `\d`              | Normal        | Linux/macOS/Win | Close current buffer and go to previous buffer                           |
-| `{count}gb`       | Normal        | Linux/macOS/Win | Go to buffer `{count}` or next buffer in the buffer list.                |
-| `{operator}iB`    | Normal        | Linux/macOS/Win | Operate in the whole buffer, `{operator}` can be `v`, `y`, `c`, `d` etc. |
-| `Alt-k`           | Normal        | Linux/macOS/Win | Move current line or selected lines up                                   |
-| `Alt-j`           | Normal        | Linux/macOS/Win | Move current line or selected lines down                                 |
-| `Alt-m`           | Normal        | macOS/Win       | Markdown previewing in system browser                                    |
-| `Alt-Shift-m`     | Normal        | macOS/Win       | Stopping Markdown previewing in system browser                           |
-| `ctrl-u`          | Insert        | Linux/macOS/Win | Turn word under cursor to upper case                                     |
-| `ctrl-t`          | Insert        | Linux/macOS/Win | Turn word under cursor to title case                                     |
-| `jk`              | Insert        | Linux/macOS/Win | Return to Normal mode without lagging                                    |
+## General Shortcuts
+
+| Shortcut          | Mode          | Description                                                              |
+|-------------------|---------------|--------------------------------------------------------------------------|
+| `;`               | Normal/Visual | Enter command mode (replaces :)                                         |
+| `H`               | Normal/Visual | Go to beginning of line (replaces ^)                                    |
+| `L`               | Normal/Visual | Go to end of line (replaces g_)                                         |
+| `j`/`k`           | Normal        | Move by display lines when no count given                               |
+| `J`               | Normal        | Join lines without moving cursor                                         |
+| `<`/`>`           | Visual        | Indent/unindent and reselect                                            |
+| `c`/`C`/`cc`      | Normal        | Change without affecting register                                        |
+| `<Tab>`           | Normal        | Next buffer                                                              |
+| `<S-Tab>`         | Normal        | Previous buffer                                                          |
+| `gb`              | Normal        | Go to buffer (forward)                                                   |
+| `gB`              | Normal        | Go to buffer (backward)                                                  |
+| `\\D`             | Normal        | Delete other buffers                                                     |
+| `<space>o`        | Normal        | Insert blank line below                                                  |
+| `<space>O`        | Normal        | Insert blank line above                                                  |
+| `<Esc>`           | Terminal      | Exit terminal mode                                                       |
+| `<F11>`           | Normal/Insert | Toggle spell checking                                                    |
+| `<F2>`            | Normal        | Copy full file path                                                      |
+| `<F3>`            | Normal        | Copy relative file path                                                  |
+| `<F4>`            | Normal        | Copy file name                                                           |
+| `<Alt-n>`         | Normal/Visual | Move line/selection up                                                   |
+| `<Alt-t>`         | Normal/Visual | Move line/selection down                                                 |
+| `<Alt-;>`         | Insert        | Add semicolon at end of line                                             |
+| `<C-u>`           | Insert        | Turn word under cursor to uppercase                                      |
+| `<C-t>`           | Insert        | Turn word under cursor to title case                                     |
+| `<C-A>`           | Insert/Command| Go to beginning of line                                                  |
+| `<C-D>`           | Insert        | Delete character to the right                                            |
+
+## Leader Key Shortcuts (`<leader>` = `,`)
+
+### File & Buffer Management
+| Shortcut          | Mode          | Description                                                              |
+|-------------------|---------------|--------------------------------------------------------------------------|
+| `<leader>p`       | Normal        | Paste below current line                                                 |
+| `<leader>P`       | Normal        | Paste above current line                                                 |
+| `<leader>w`       | Normal        | Save buffer                                                              |
+| `<leader>q`       | Normal        | Quit current window                                                      |
+| `<leader>Q`       | Normal        | Quit nvim                                                                |
+| `<leader>bd`      | Normal        | Delete current buffer                                                    |
+| `<leader>y`       | Normal        | Yank entire buffer                                                       |
+| `<leader>v`       | Normal        | Reselect last pasted area                                                |
+| `<leader>sa`      | Normal        | Select all                                                               |
+| `<leader>cd`      | Normal        | Change to current file's directory                                       |
+| `<leader><space>` | Normal        | Remove trailing whitespace                                               |
+
+### Config & Development
+| Shortcut          | Mode          | Description                                                              |
+|-------------------|---------------|--------------------------------------------------------------------------|
+| `<leader>ev`      | Normal        | Edit nvim config                                                         |
+| `<leader>sv`      | Normal        | Reload nvim config                                                       |
+| `<leader>st`      | Normal        | Check syntax group                                                       |
+| `<leader>cl`      | Normal        | Toggle cursor column                                                     |
+| `<leader>cb`      | Normal        | Show cursor (blink effect)                                               |
+| `<leader>f`       | Normal        | Format JSON file                                                         |
+
+### Plugin-Specific Shortcuts
+
+#### FZF Lua
+| Shortcut          | Mode          | Description                                                              |
+|-------------------|---------------|--------------------------------------------------------------------------|
+| `<C-P>`           | Normal        | Fuzzy find files                                                         |
+| `<S-F>`           | Normal        | Fuzzy grep files                                                         |
+| `<leader>fh`      | Normal        | Fuzzy grep help tags                                                     |
+| `<leader>ft`      | Normal        | Fuzzy search buffer tags                                                 |
+| `<leader>fb`      | Normal        | Fuzzy search opened buffers                                              |
+
+#### Git (Fugitive)
+| Shortcut          | Mode          | Description                                                              |
+|-------------------|---------------|--------------------------------------------------------------------------|
+| `<leader>gs`      | Normal        | Git status                                                               |
+| `<leader>gw`      | Normal        | Git add file                                                             |
+| `<leader>gc`      | Normal        | Git commit changes                                                       |
+| `<leader>gpl`     | Normal        | Git pull changes                                                         |
+| `<leader>gpu`     | Normal        | Git push changes                                                         |
+| `<leader>gb`      | Visual        | Git blame selected line                                                  |
+| `<leader>gbn`     | Normal        | Git create new branch                                                    |
+| `<leader>gf`      | Normal        | Git fetch                                                                |
+| `<leader>gbd`     | Normal        | Git delete branch                                                        |
+| `<leader>Gr`      | Normal        | Git checkout file                                                        |
+
+#### Git Signs
+| Shortcut          | Mode          | Description                                                              |
+|-------------------|---------------|--------------------------------------------------------------------------|
+| `}c`              | Normal        | Next hunk                                                                |
+| `{c`              | Normal        | Previous hunk                                                            |
+| `<leader>hp`      | Normal        | Preview hunk                                                             |
+| `<leader>hb`      | Normal        | Blame hunk                                                               |
+| `<leader>hs`      | Normal/Visual | Stage hunk                                                               |
+| `<leader>hr`      | Normal/Visual | Reset hunk                                                               |
+| `<leader>hS`      | Normal        | Stage buffer                                                             |
+| `<leader>hu`      | Normal        | Undo stage hunk                                                          |
+| `<leader>hR`      | Normal        | Reset buffer                                                             |
+| `<leader>tb`      | Normal        | Toggle current line blame                                                |
+| `<leader>gr`      | Normal        | Reset hunk                                                               |
+| `<leader>hd`      | Normal        | Diff this                                                                |
+| `<leader>hD`      | Normal        | Diff this (~)                                                            |
+| `<leader>td`      | Normal        | Toggle deleted                                                           |
+
+#### Yanky (Yank History)
+| Shortcut          | Mode          | Description                                                              |
+|-------------------|---------------|--------------------------------------------------------------------------|
+| `yp`              | Normal/Visual | Put after (yanky)                                                        |
+| `P`               | Normal/Visual | Put before (yanky)                                                       |
+| `[y`              | Normal        | Previous yank entry (after paste)                                       |
+| `]y`              | Normal        | Next yank entry (after paste)                                           |
+
+#### Hop (Navigation)
+| Shortcut          | Mode          | Description                                                              |
+|-------------------|---------------|--------------------------------------------------------------------------|
+| `f`               | Normal/Visual/Operator | Hop to 2 characters                                        |
+
+#### Elixir Tools (LSP - in Elixir files)
+| Shortcut          | Mode          | Description                                                              |
+|-------------------|---------------|--------------------------------------------------------------------------|
+| `<leader>df`      | Normal        | Format document                                                          |
+| `<leader>gd`      | Normal        | Open diagnostic float                                                    |
+| `ed`              | Normal        | Go to definition                                                         |
+| `vgt`             | Normal        | Go to definition (vertical split)                                        |
+| `hgt`             | Normal        | Go to definition (horizontal split)                                      |
+| `<leader>eK`      | Normal        | Hover documentation                                                      |
+| `gD`              | Normal        | Go to implementation                                                     |
+| `<leader>es`      | Normal        | Signature help                                                           |
+| `1gD`             | Normal        | Go to type definition                                                    |
+| `egr`             | Normal        | References                                                               |
+| `g0`              | Normal        | Document symbols                                                         |
+| `gW`              | Normal        | Workspace symbols                                                        |
+| `<leader>dd`      | Normal        | Diagnostics                                                              |
+| `<leader>da`      | Normal        | All diagnostics                                                          |
+| `<leader>re`      | Normal        | Rename symbol                                                            |
+| `<space>r`        | Normal        | Run codelens                                                             |
+| `<space>fp`       | Normal        | From pipe (Elixir)                                                      |
+| `<space>tp`       | Normal        | To pipe (Elixir)                                                        |
+| `<space>em`       | Visual        | Expand macro (Elixir)                                                    |
+| `<C-l>`           | Insert/Select | Expand snippet                                                           |
+
+#### Telescope
+| Shortcut          | Mode          | Description                                                              |
+|-------------------|---------------|--------------------------------------------------------------------------|
+| `<leader>tr`      | Normal        | LSP references                                                           |
+
+#### File Explorer
+| Shortcut          | Mode          | Description                                                              |
+|-------------------|---------------|--------------------------------------------------------------------------|
+| `,e`              | Normal        | Toggle file explorer                                                     |
+
+#### Claude Code
+| Shortcut          | Mode          | Description                                                              |
+|-------------------|---------------|--------------------------------------------------------------------------|
+| `<leader>cc`      | Normal/Visual | Open Claude Code                                                         |
+| `<leader>ch`      | Normal        | Open Claude Chat                                                         |
+| `<leader>ca`      | Normal        | Ask Claude about current buffer                                          |
+
+#### Org Mode (Global)
+| Shortcut          | Mode          | Description                                                              |
+|-------------------|---------------|--------------------------------------------------------------------------|
+| `;oa`             | Normal        | Open org agenda                                                          |
+| `;oc`             | Normal        | Open org capture                                                         |
+
+#### Org Mode (In .org files)
+| Shortcut          | Mode          | Description                                                              |
+|-------------------|---------------|--------------------------------------------------------------------------|
+| `<Tab>`           | Normal        | Cycle heading visibility                                                 |
+| `<S-Tab>`         | Normal        | Global cycle (all headings)                                             |
+| `cit`             | Normal        | Change TODO state                                                        |
+| `ciT`             | Normal        | Change TODO state (previous)                                             |
+| `<C-Space>`       | Normal        | Toggle checkbox                                                          |
+| `<<`/`>>`         | Normal        | Promote/demote current item                                              |
+| `<s`/`>s`         | Normal        | Promote/demote subtree                                                   |
+| `.<CR>`           | Normal        | Add new heading/item/row                                                 |
+| `}`/`{`           | Normal        | Next/previous visible heading                                            |
+| `]]`/`[[`         | Normal        | Forward/backward heading same level                                      |
+| `g{`              | Normal        | Go up to parent heading                                                  |
+| `?`               | Normal        | Show org help                                                            |
+
+#### Org Mode (`;o` prefix)
+| Shortcut          | Mode          | Description                                                              |
+|-------------------|---------------|--------------------------------------------------------------------------|
+| `;oih`            | Normal        | Insert heading (respect content)                                         |
+| `;oiT`            | Normal        | Insert TODO heading                                                      |
+| `;oit`            | Normal        | Insert TODO heading (respect content)                                    |
+| `;oK`/`;oJ`       | Normal        | Move subtree up/down                                                     |
+| `;oe`             | Normal        | Export                                                                   |
+| `;o$`             | Normal        | Archive subtree                                                          |
+| `;ot`             | Normal        | Set tags                                                                 |
+| `;oA`             | Normal        | Toggle archive tag                                                       |
+| `;oo`             | Normal        | Open at point                                                            |
+| `;or`             | Normal        | Refile                                                                   |
+
+#### Org Agenda View
+| Shortcut          | Mode          | Description                                                              |
+|-------------------|---------------|--------------------------------------------------------------------------|
+| `f`/`b`           | Normal        | Later/earlier                                                            |
+| `.`               | Normal        | Go to today                                                              |
+| `vd`/`vw`/`vm`/`vy`| Normal       | Day/week/month/year view                                                 |
+| `q`               | Normal        | Quit agenda                                                              |
+| `<CR>`            | Normal        | Switch to item                                                           |
+| `<Tab>`           | Normal        | Go to item                                                               |
+| `J`               | Normal        | Go to specific date                                                      |
+| `r`               | Normal        | Refresh agenda                                                           |
+| `t`               | Normal        | Change TODO state                                                        |
+
+#### Org Capture
+| Shortcut          | Mode          | Description                                                              |
+|-------------------|---------------|--------------------------------------------------------------------------|
+| `<C-c>`           | Normal        | Finalize capture                                                         |
+| `;or`             | Normal        | Refile capture                                                           |
+| `;ok`             | Normal        | Kill capture                                                             |
+| `?`               | Normal        | Show capture help                                                        |
+
+## Text Objects
+
+| Shortcut          | Mode          | Description                                                              |
+|-------------------|---------------|--------------------------------------------------------------------------|
+| `iu`              | Visual/Operator| URL text object                                                         |
+| `iB`              | Visual/Operator| Buffer text object                                                      |
 
 # Custom commands
 

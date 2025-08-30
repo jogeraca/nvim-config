@@ -297,7 +297,7 @@ local plugin_specs = {
   },
 
   -- Multiple cursor plugin like Sublime Text?
-  -- 'mg979/vim-visual-multi'
+  {'mg979/vim-visual-multi'},
 
   -- Show undo history visually
   { "simnalamburt/vim-mundo", cmd = { "MundoToggle", "MundoShow" } },
@@ -405,7 +405,7 @@ local plugin_specs = {
   {
     "iamcco/markdown-preview.nvim",
     enabled = function()
-      return vim.g.is_win or vim.g.is_mac
+      return true
     end,
     build = "cd app && npm install && git restore .",
     ft = { "markdown" },
@@ -556,24 +556,6 @@ local plugin_specs = {
     },
   },
   {
-    "CopilotC-Nvim/CopilotChat.nvim",
-    dependencies = {
-      { "zbirenbaum/copilot.lua" }, -- or github/copilot.vim
-    },
-    opts = {
-      debug = true, -- Enable debugging
-      -- See Configuration section for rest
-    },
-    cmd = { "CopilotChat" },
-  },
-  {
-    "zbirenbaum/copilot.lua",
-    cmd = "Copilot",
-    config = function()
-      require("copilot").setup {}
-    end,
-  },
-  {
     "smjonas/live-command.nvim",
     -- live-command supports semantic versioning via Git tags
     -- tag = "2.*",
@@ -608,9 +590,134 @@ local plugin_specs = {
     ---@type quicker.SetupOptions
     opts = {},
   },
+---@diagnostic disable-next-line: missing-fields
+-- custom yoser
+  {
+    "yetone/avante.nvim",
+    config = function()
+      require("config.avante")
+    end,
+    event = "VeryLazy",
+    version = "*",
+    build = "make",
+    dependencies = {
+      "nvim-treesitter/nvim-treesitter",
+      "stevearc/dressing.nvim",
+      "nvim-lua/plenary.nvim",
+      "MunifTanjim/nui.nvim",
+      --- The below dependencies are optional,
+      "echasnovski/mini.pick", -- for file_selector provider mini.pick
+      "nvim-telescope/telescope.nvim", -- for file_selector provider telescope
+      "hrsh7th/nvim-cmp", -- autocompletion for avante commands and mentions
+      "ibhagwan/fzf-lua", -- for file_selector provider fzf
+      "nvim-tree/nvim-web-devicons", -- or echasnovski/mini.icons
+      {
+        -- support for image pasting
+        "HakonHarnes/img-clip.nvim",
+        event = "VeryLazy",
+        opts = {
+          -- recommended settings
+          default = {
+            embed_image_as_base64 = false,
+            prompt_for_file_name = false,
+            drag_and_drop = {
+              insert_mode = true,
+            },
+            -- required for Windows users
+            use_absolute_path = true,
+          },
+        },
+      },
+      {
+        -- Make sure to set this up properly if you have lazy=true
+        'MeanderingProgrammer/render-markdown.nvim',
+        opts = {
+          file_types = { "markdown", "Avante" },
+        },
+        ft = { "markdown", "Avante" },
+      },
+    },
+  },
+  {
+    "lukas-reineke/headlines.nvim",
+    dependencies = "nvim-treesitter/nvim-treesitter",
+    config = false,
+  },
+  { 'echasnovski/mini.nvim', version = '*' },
+  {
+    "nvim-orgmode/orgmode",
+    ft = {'org'},
+    dependencies = {
+      { "nvim-treesitter/nvim-treesitter", lazy = true },
+    },
+    event = "VeryLazy",
+    config = function()
+      require("config.orgmode")
+    end,
+  },
+  {
+    "tpope/vim-projectionist", version = "*",
+  },
+  -- Expert language server for Elixir
+  {
+    "elixir-tools/elixir-tools.nvim",
+    version = "*",
+    event = { "BufReadPre", "BufNewFile" },
+    config = function()
+      require("config.elixir-tools")
+    end,
+  },
+  {
+    "elixir-lang/expert",
+    ft = { "elixir", "eelixir", "heex" },
+    config = function()
+      require("config.expert")
+    end,
+  },
+  {
+   "nvim-neotest/neotest",
+    dependencies = {
+      "jfpedroza/neotest-elixir",
+      "nvim-lua/plenary.nvim",
+      "nvim-treesitter/nvim-treesitter",
+      "antoinemadec/FixCursorHold.nvim",
+      "nvim-neotest/nvim-nio",
+    },
+    config = function()
+      require("config.neotest")
+    end,
+  },
+
+  -- PlantUML syntax highlighting
+  {
+    "aklt/plantuml-syntax",
+    ft = { "plantuml" },
+  },
+  -- PlantUML support with preview
+  {
+    "javiorfo/nvim-soil",
+    lazy = true,
+    ft = "plantuml",
+    config = function()
+      -- The setup function will automatically create PlantUML commands
+      require('soil').setup({
+        -- If you want to use PlantUML jar file instead of the command line tool
+        -- puml_jar_path = "/path/to/plantuml.jar"
+        -- Use nsxiv as image viewer
+        image_viewer = "nsxiv"
+      })
+    end
+  },
+  -- Claude Code integration
+  {
+    "coder/claudecode.nvim",
+    cmd = { "ClaudeCode", "ClaudeChat" },
+    config = function()
+      require("config.claudecode")
+    end,
+  },
 }
 
----@diagnostic disable-next-line: missing-fields
 require("lazy").setup {
   spec = plugin_specs,
   ui = {
