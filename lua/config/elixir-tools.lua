@@ -37,11 +37,7 @@ vim.api.nvim_set_hl(0, "ElixirFunction", {italic = true, bold = true})
 local elixirls = require("elixir.elixirls")
 
 require("elixir").setup({
-  nextls = {
-    enable = false,
-    },
-  },
-  elixirls = {
-  },
+  nextls = { enable = false},
+  elixirls = { enable = false},
   projectionist = {enable = true},
 })
