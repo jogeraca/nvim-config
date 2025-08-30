@@ -658,12 +658,20 @@ local plugin_specs = {
   {
     "tpope/vim-projectionist", version = "*",
   },
+  -- Expert language server for Elixir
   {
     "elixir-tools/elixir-tools.nvim",
     version = "*",
     event = { "BufReadPre", "BufNewFile" },
     config = function()
       require("config.elixir-tools")
+    end,
+  },
+  {
+    "elixir-lang/expert",
+    ft = { "elixir", "eelixir", "heex" },
+    config = function()
+      require("config.expert")
     end,
   },
   {
