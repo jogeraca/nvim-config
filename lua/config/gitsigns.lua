@@ -8,7 +8,7 @@ gs.setup {
     topdelete = { text = "‾" },
     changedelete = { text = "│" },
   },
-  word_diff = false,
+  word_diff = true,
   signcolumn = true, -- Toggle with `:Gitsigns toggle_signs`
   numhl = true, -- Toggle with `:Gitsigns toggle_numhl`
   linehl = false, -- Toggle with `:Gitsigns toggle_linehl`
