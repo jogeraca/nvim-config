@@ -871,25 +871,13 @@ local plugin_specs = {
       require("config.neotest")
     end,
   },
-
-  -- PlantUML syntax highlighting
   {
+    "https://gitlab.com/itaranto/preview.nvim",
+    dependencies = {
     "aklt/plantuml-syntax",
-    ft = { "plantuml" },
-  },
-  -- PlantUML support with preview
-  {
-    "javiorfo/nvim-soil",
-    lazy = true,
-    ft = "plantuml",
+    },
     config = function()
-      -- The setup function will automatically create PlantUML commands
-      require('soil').setup({
-        -- If you want to use PlantUML jar file instead of the command line tool
-        -- puml_jar_path = "/path/to/plantuml.jar"
-        -- Use nsxiv as image viewer
-        image_viewer = "nsxiv"
-      })
+      require("config.preview")
     end
   },
   -- Claude Code integration
