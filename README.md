@@ -278,6 +278,14 @@ In the following shortcuts, `<leader>` represents ASCII character `,`.
 | `<space>em`       | Visual        | Expand macro (Elixir)                                                    |
 | `<C-l>`           | Insert/Select | Expand snippet                                                           |
 
+**Finding Elixir Modules by Name:**
+| Shortcut          | Description                                                                          |
+|-------------------|--------------------------------------------------------------------------------------|
+| `ed` / `gd`       | Go to definition (when cursor is on module name)                                     |
+| `gW`              | Search workspace symbols — type module name (e.g., `MyApp.Accounts`)                 |
+| `<S-F>`           | Grep for `defmodule MyApp.ModuleName`                                                |
+| `<C-P>`           | Fuzzy file search — type path (e.g., `accounts/user` for `MyApp.Accounts.User`)      |
+
 #### Telescope
 | Shortcut          | Mode          | Description                                                              |
 |-------------------|---------------|--------------------------------------------------------------------------|
@@ -352,10 +360,35 @@ In the following shortcuts, `<leader>` represents ASCII character `,`.
 | `;ok`             | Normal        | Kill capture                                                             |
 | `?`               | Normal        | Show capture help                                                        |
 
+## Code Navigation (Treesitter)
+
+| Shortcut          | Mode          | Description                                                              |
+|-------------------|---------------|--------------------------------------------------------------------------|
+| `]m`              | Normal        | Go to next function start                                                |
+| `[m`              | Normal        | Go to previous function start                                            |
+| `]M`              | Normal        | Go to next function end                                                  |
+| `[M`              | Normal        | Go to previous function end                                              |
+| `]]`              | Normal        | Go to next class start                                                   |
+| `[[`              | Normal        | Go to previous class start                                               |
+| `][`              | Normal        | Go to next class end                                                     |
+| `[]`              | Normal        | Go to previous class end                                                 |
+
+## Symbol Listing
+
+| Shortcut          | Mode          | Description                                                              |
+|-------------------|---------------|--------------------------------------------------------------------------|
+| `g0`              | Normal        | Telescope document symbols (list functions in current file)              |
+| `gW`              | Normal        | Telescope workspace symbols                                              |
+| `<leader>ft`      | Normal        | FZF buffer tags                                                          |
+
 ## Text Objects
 
 | Shortcut          | Mode          | Description                                                              |
 |-------------------|---------------|--------------------------------------------------------------------------|
+| `af`              | Visual/Operator| Select entire function (outer)                                          |
+| `if`              | Visual/Operator| Select function body (inner)                                            |
+| `ac`              | Visual/Operator| Select entire class (outer)                                             |
+| `ic`              | Visual/Operator| Select class body (inner)                                               |
 | `iu`              | Visual/Operator| URL text object                                                         |
 | `iB`              | Visual/Operator| Buffer text object                                                      |
 
