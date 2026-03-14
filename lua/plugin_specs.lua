@@ -326,7 +326,7 @@ local plugin_specs = {
   },
 
   -- Multiple cursor plugin like Sublime Text?
-  -- 'mg979/vim-visual-multi'
+  'mg979/vim-visual-multi',
 
   -- Manage your yank history
   {
@@ -806,6 +806,19 @@ local plugin_specs = {
     config = function()
       require("config.nvim-lint")
     end,
+  },
+
+-- custom yoser
+  {
+    "elixir-tools/elixir-tools.nvim",
+    version = "*",
+    event = { "BufReadPre", "BufNewFile" },
+    config = function()
+      require("config.elixir-tools")
+    end,
+  },
+  {
+    "tpope/vim-projectionist", version = "*",
   },
 }
 
