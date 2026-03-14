@@ -290,3 +290,11 @@ api.nvim_create_autocmd("BufWritePost", {
     end
   end,
 })
+
+vim.api.nvim_create_user_command("Rg", function(opts)
+  require("fzf-lua").grep({ search = opts.args, no_esc = true })
+end, { nargs = 1 })
+
+vim.api.nvim_create_user_command("Rgex", function(opts)
+  require("fzf-lua").grep({ search = opts.args, no_esc = true, rg_opts = "--glob=*.ex" })
+end, { nargs = 1 })
