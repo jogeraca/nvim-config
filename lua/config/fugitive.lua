@@ -25,3 +25,5 @@ end, {
 
 keymap.set("n", "<leader>gf", ":Git fetch ", { desc = "Git: prune branches" })
 keymap.set("n", "<leader>gbd", ":Git branch -D ", { desc = "Git: delete branch" })
+
+keymap.set("n", "<leader>Gr", ":Gr<cr>", { desc = "Git: git checkout file" })

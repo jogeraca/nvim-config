@@ -306,3 +306,22 @@ api.nvim_create_autocmd({ "InsertLeave", "TextChanged" }, {
     end
   end,
 })
+
+api.nvim_create_autocmd("FileType", {
+  group = api.nvim_create_augroup("vertical_help", { clear = true }),
+  pattern = "help",
+  desc = "Show help in vertical window",
+  callback = function(_)
+    -- L means to put window to leftmost
+    vim.cmd.wincmd([[L]])
+  end,
+})
+
+-- custom commands
+vim.api.nvim_create_user_command("Rg", function(opts)
+  require("fzf-lua").grep({ search = opts.args, no_esc = true })
+end, { nargs = 1 })
+
+vim.api.nvim_create_user_command("Rgex", function(opts)
+  require("fzf-lua").grep({ search = opts.args, no_esc = true, rg_opts = "--glob=*.ex" })
+end, { nargs = 1 })
