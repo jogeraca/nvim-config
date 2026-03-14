@@ -852,13 +852,6 @@ local plugin_specs = {
     end,
   },
   {
-    "elixir-lang/expert",
-    ft = { "elixir", "eelixir", "heex" },
-    config = function()
-      require("config.expert")
-    end,
-  },
-  {
    "nvim-neotest/neotest",
     dependencies = {
       "jfpedroza/neotest-elixir",
