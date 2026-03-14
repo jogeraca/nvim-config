@@ -20,8 +20,6 @@ local function setup()
       temperature = 0.7,
       system_prompt = "You are a helpful AI assistant integrated into Neovim. Help the user with their code and questions.",
     },
-    -- Model configuration
-    model = "claude-3-5-sonnet-20241022", -- Default model
     -- Integration settings
     integrations = {
       telescope = true, -- Enable telescope integration if available
