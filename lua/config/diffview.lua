@@ -21,3 +21,9 @@ diffview.setup {
     },
   },
 }
+-- =======
+-- require("diffview").setup({
+--   -- Disable mercurial support to avoid hg_cmd warning
+--   hg_cmd = { "false" }, -- Use 'false' command to disable hg checks
+-- })
+-- >>>>>>> b5e42cd (fix: improve the experience in git)

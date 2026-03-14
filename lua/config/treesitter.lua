@@ -1,4 +1,3 @@
--- a list of filetypes to install treesitter parsers and queries
 local ensure_installed = {
   "python",
   "cpp",
@@ -13,6 +12,10 @@ local ensure_installed = {
   "markdown",
   "sh",
   "zsh",
+  "elixir",
+  "heex",
+  "ex",
+  "eex",
 }
 
 vim.api.nvim_create_autocmd("FileType", {
