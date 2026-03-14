@@ -26,18 +26,20 @@ local custom_attach = function(client, bufnr)
   vim.cmd([[imap <expr> <C-l> vsnip#available(1) ? '<Plug>(vsnip-expand-or-jump)' : '<C-l>']])
   vim.cmd([[smap <expr> <C-l> vsnip#available(1) ? '<Plug>(vsnip-expand-or-jump)' : '<C-l>']])
 
-  -- vim.keymap.set("n", "<leader>df", "<cmd>lua vim.lsp.buf.format()<cr>", map_opts)
+  --replace by expert
+  -- vim.keymap.set("n", "<leader>df", "<cmd>lua vim.lsp.buf.format()<cr>", map_opts) 
   -- vim.keymap.set("n", "<leader>gd", "<cmd>lua vim.diagnostic.open_float()<cr>", map_opts)
   -- vim.keymap.set("n", "ed", "<cmd>lua vim.lsp.buf.definition()<cr>", map_opts)
   -- vim.keymap.set("n", "vgt", ":vsplit | lua vim.lsp.buf.definition()<cr>", map_opts)
   -- vim.keymap.set("n", "hgt", ":belowright split| lua vim.lsp.buf.definition()<cr>", map_opts)
   -- vim.keymap.set("n", "<leader>eK", "<cmd>lua vim.lsp.buf.hover()<cr>", map_opts)
-  -- vim.keymap.set("n", "gD", "<cmd>lua vim.lsp.buf.implementation()<cr>", map_opts)
   -- vim.keymap.set("n", "<leader>es", "<cmd>lua vim.lsp.buf.signature_help()<cr>", map_opts)
-  -- vim.keymap.set("n", "1gD", "<cmd>lua vim.lsp.buf.type_definition()<cr>", map_opts)
-  -- vim.keymap.set("n", "egr", ":References<cr>", map_opts)
   -- vim.keymap.set("n", "g0", ":DocumentSymbols<cr>", map_opts)
   -- vim.keymap.set("n", "gW", ":WorkspaceSymbols<cr>", map_opts)
+
+  -- vim.keymap.set("n", "gD", "<cmd>lua vim.lsp.buf.implementation()<cr>", map_opts)
+  -- vim.keymap.set("n", "1gD", "<cmd>lua vim.lsp.buf.type_definition()<cr>", map_opts)
+  -- vim.keymap.set("n", "egr", ":References<cr>", map_opts)
   -- vim.keymap.set("n", "<leader>dd", ":Diagnostics<cr>", map_opts)
   -- vim.keymap.set("n", "<leader>da", ":DiagnosticsAll<cr>", map_opts)
 
@@ -62,9 +64,9 @@ vim.api.nvim_set_hl(0, "ElixirFunction", {italic = true, bold = true})
 local elixirls = require("elixir.elixirls")
 
 require("elixir").setup({
-  nextls = { enable = false },
+  nextls = { enable = false},
   elixirls = {
-    enable = true,
+    enable = false, 
     on_attach = custom_attach,
   },
   projectionist = { enable = true },
