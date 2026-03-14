@@ -6,3 +6,5 @@ vim.keymap.set("n", "<space>s", require("nvim-tree.api").tree.toggle, {
   silent = true,
   desc = "toggle nvim-tree",
 })
+
+keymap.set("n", "<leader>?", "<cmd>NvimTreeFindFile<cr>", {desc="Find current file"})
