@@ -811,6 +811,15 @@ local plugin_specs = {
     end,
   },
   {
+    "https://gitlab.com/itaranto/preview.nvim",
+    dependencies = {
+    "aklt/plantuml-syntax",
+    },
+    config = function()
+      require("config.preview")
+    end
+  },
+  {
     "tpope/vim-projectionist", version = "*",
   },
 }
