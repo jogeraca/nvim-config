@@ -82,6 +82,32 @@ vim.api.nvim_create_autocmd("LspAttach", {
     if client.name == "ruff" then
       client.server_capabilities.hoverProvider = false
     end
+  
+    -- TODO: turn this into a command to toggle dynamically
+
+    -- Expert LSP (Elixir) specific keymaps
+    if client.name == "expert" then
+      map("n", "<leader>df", "<cmd>lua vim.lsp.buf.format()<cr>")
+      map("n", "<leader>gd", "<cmd>lua vim.diagnostic.open_float()<cr>")
+      map("n", "ed", "<cmd>lua vim.lsp.buf.definition()<cr>")
+      map("n", "vgt", ":vsplit | lua vim.lsp.buf.definition()<cr>")
+      map("n", "hgt", ":belowright split| lua vim.lsp.buf.definition()<cr>")
+      map("n", "<leader>eK", "<cmd>lua vim.lsp.buf.hover()<cr>")
+      map("n", "<leader>es", "<cmd>lua vim.lsp.buf.signature_help()<cr>")
+      map("n", "egr", "<cmd>Telescope lsp_references<cr>")
+      map("n", "g0", "<cmd>Telescope lsp_document_symbols<cr>")
+      map("n", "gW", "<cmd>Telescope lsp_workspace_symbols<cr>")
+
+      -- map("n", "gD", "<cmd>lua vim.lsp.buf.implementation()<cr>") pending
+      -- map("n", "1gD", "<cmd>lua vim.lsp.buf.type_definition()<cr>") pending
+      -- map("n", "<leader>dd", "<cmd>Telescope diagnostics bufnr=0<cr>")  pending
+      -- map("n", "<leader>da", "<cmd>Telescope diagnostics<cr>") pending
+      -- map("n", "<space>r", lua vim.lsp.codelens.run, { desc = "Run codelens" }) pending
+    end
+
+    -- Uncomment code below to enable inlay hint from language server, some LSP server supports inlay hint,
+    -- but disable this feature by default, so you may need to enable inlay hint in the LSP server config.
+    -- vim.lsp.inlay_hint.enable(true, {buffer=bufnr})
   end,
   nested = true,
   desc = "Configure buffer keymap and behavior based on LSP",
@@ -123,10 +149,26 @@ local enabled_lsp_servers = {
   vimls = { exe = "vim-language-server", optional = true },
   yamlls = { exe = "yaml-language-server", optional = true },
   typos_lsp = { exe = "typos-lsp", optional = true },
+  expert = "expert",
 }
 
-for server_name, server_info in pairs(enabled_lsp_servers) do
-  if utils.executable(server_info.exe) then
+
+-- Expert LSP config for Elixir
+vim.lsp.config('expert', {
+  cmd = { 'expert', '--stdio' },
+  root_markers = { 'mix.exs', '.git' },
+  filetypes = { 'elixir', 'eelixir', 'heex' },
+  settings = {
+    expert = {
+      workspaceSymbols = {
+        minQueryLength = 3,
+      },
+    },
+  },
+})
+
+for server_name, lsp_executable in pairs(enabled_lsp_servers) do
+  if utils.executable(lsp_executable) then
     vim.lsp.enable(server_name)
   else
     -- only warn about missing non-optional LSP to avoid noise
