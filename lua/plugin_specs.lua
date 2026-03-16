@@ -882,6 +882,17 @@ local plugin_specs = {
     end,
     event = "VeryLazy",
   },
+  {
+    "nvim-orgmode/orgmode",
+    ft = {'org'},
+    dependencies = {
+      { "nvim-treesitter/nvim-treesitter", lazy = true },
+    },
+    event = "VeryLazy",
+    config = function()
+      require("config.orgmode")
+    end,
+  },
 }
 
 require("lazy").setup {
