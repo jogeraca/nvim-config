@@ -9,8 +9,8 @@ require('preview').setup({
   previewers = {
     -- PlantUML SVG generation
     plantuml_svg = {
-      args = { '-pipe', '-tsvg' },
-      output_extension = 'svg',
+      args = { '-pipe', '-tpng' },
+      output_extension = 'png',
     },
     -- PlantUML text generation
     plantuml_text = {
