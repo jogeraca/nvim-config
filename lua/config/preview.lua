@@ -1,26 +1,73 @@
 require('preview').setup({
-  previewers_by_ft = {
-    -- PlantUML preview using browser (works with installed plantuml)
-    plantuml = {
-      name = 'plantuml_svg',
-      renderer = { type = 'command', opts = { cmd = { 'nsxiv' } } },
-    },
-  },
-  previewers = {
-    -- PlantUML SVG generation
-    plantuml_svg = {
-      args = { '-pipe', '-tpng' },
-      output_extension = 'png',
-    },
-    -- PlantUML text generation
-    plantuml_text = {
-      args = { '-pipe', '-ttxt' },
-      output_extension = 'txt',
-      renderer = { type = 'buffer', opts = { split_cmd = 'split' } },
-    },
-  },
-  render_on_write = true,
-  auto_open = true,
+  previewers_by_ft = {},
+  previewers = {},
+  render_on_write = false,
+})
+
+-- PlantUML preview: file mode (supports !include), generates in source directory
+local plantuml_viewers = {}
+
+local function plantuml_preview()
+  if vim.bo.filetype ~= 'plantuml' then return end
+
+  local current_file = vim.fn.expand('%:p')
+  local output_dir = vim.fn.expand('%:p:h')
+
+  -- Read @startuml name to predict the output filename
+  local diagram_name = nil
+  local lines = vim.api.nvim_buf_get_lines(0, 0, 10, false)
+  for _, line in ipairs(lines) do
+    local name = line:match('^@startuml%s+(%S+)')
+    if name then
+      diagram_name = name
+      break
+    end
+  end
+
+  local output_file
+  if diagram_name then
+    output_file = output_dir .. '/' .. diagram_name .. '.png'
+  else
+    output_file = vim.fn.expand('%:p:r') .. '.png'
+  end
+
+  vim.fn.jobstart({ 'plantuml', '-tpng', current_file }, {
+    on_exit = function(_, code)
+      vim.schedule(function()
+        if code ~= 0 and code ~= 200 then
+          print('[plantuml] Error generating preview')
+          return
+        end
+
+        if vim.fn.filereadable(output_file) == 0 then
+          print('[plantuml] PNG not found: ' .. output_file)
+          return
+        end
+
+        if not plantuml_viewers[output_file] then
+          plantuml_viewers[output_file] = vim.fn.jobstart({ 'nsxiv', output_file }, {
+            on_exit = function()
+              plantuml_viewers[output_file] = nil
+            end,
+          })
+        end
+      end)
+    end,
+  })
+end
+
+vim.api.nvim_create_user_command('PreviewFile', plantuml_preview, {})
+
+local plantuml_group = vim.api.nvim_create_augroup('PlantUMLPreview', {})
+vim.api.nvim_create_autocmd('BufWritePost', {
+  group = plantuml_group,
+  pattern = '*.puml,*.plantuml,*.uml,*.pu',
+  callback = plantuml_preview,
+})
+vim.api.nvim_create_autocmd('FileType', {
+  group = plantuml_group,
+  pattern = 'plantuml',
+  callback = plantuml_preview,
 })
 
 -- Create PreviewText command using soil plugin
