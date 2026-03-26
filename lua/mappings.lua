@@ -263,3 +263,27 @@ keymap.set("n", "<Esc>", function()
 end, {
   desc = "close floating win",
 })
+-- Copy namefile with path and only name
+keymap.set("n", "<F2>", function()
+    vim.fn.setreg("+", vim.fn.expand("%:p"))
+    print("Ruta copiada: " .. vim.fn.expand("%:p"))
+end, { desc = "Copiar ruta del archivo" })
+keymap.set("n", "<F3>", function()
+    local relative_path = vim.fn.expand("%:~:.")
+    vim.fn.setreg("+", relative_path)
+    print("Ruta relativa copiada: " .. relative_path)
+end, { desc = "Copiar ruta relativa del archivo" })
+
+keymap.set("n", "<F4>", function()
+    local file_name = vim.fn.expand("%:t")
+    vim.fn.setreg("+", file_name)
+    print("Nombre del archivo copiado: " .. file_name)
+end, { desc = "Copiar nombre del archivo" })
+
+keymap.set("n", "<leader>tr", "<cmd>Telescope lsp_references <cr>", {desc= "Go to incoming calls"})
+
+-- Claude Code keybindings
+keymap.set("n", "<leader>cc", "<cmd>ClaudeCode<cr>", { desc = "open claude code" })
+keymap.set("n", "<leader>ch", "<cmd>ClaudeChat<cr>", { desc = "open claude chat" })
+keymap.set("v", "<leader>cc", "<cmd>ClaudeCode<cr>", { desc = "send selection to claude" })
+keymap.set("n", "<leader>ca", "<cmd>ClaudeAsk<cr>", { desc = "ask claude about current buffer" })
