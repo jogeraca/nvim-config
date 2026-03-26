@@ -14,6 +14,8 @@ local ensure_installed = {
   "vim",
   "yaml",
   "zsh",
+  "elixir",
+  "heex",
 }
 
 vim.api.nvim_create_autocmd("FileType", {
