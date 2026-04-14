@@ -880,6 +880,14 @@ local plugin_specs = {
       require("config.claudecode")
     end,
   },
+  {
+  "teamtype/teamtype-nvim",
+  keys = {
+    { "<leader>ej", "<cmd>TeamtypeJumpToCursor<cr>" },
+    { "<leader>ef", "<cmd>TeamtypeFollow<cr>" },
+  },
+  lazy = false,
+  },
   -- CodeCompanion - AI chat with multiple adapters
   {
     "olimorris/codecompanion.nvim",
