@@ -7,7 +7,7 @@ require('preview').setup({
   },
   previewers = {
     plantuml_svg = {
-      args = { '-pipe', '-tpng' },
+      args = { '-pipe', '-tsvg' },
     },
   },
   render_on_write = true,
