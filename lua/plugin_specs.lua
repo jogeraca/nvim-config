@@ -323,7 +323,7 @@ local plugin_specs = {
   },
 
   -- Multiple cursor plugin like Sublime Text?
-  -- 'mg979/vim-visual-multi'
+  'mg979/vim-visual-multi',
 
   -- Manage your yank history
   {
@@ -802,6 +802,114 @@ local plugin_specs = {
     "mfussenegger/nvim-lint",
     config = function()
       require("config.nvim-lint")
+    end,
+  },
+
+-- custom yoser
+  {
+    "elixir-tools/elixir-tools.nvim",
+    version = "*",
+    event = { "BufReadPre", "BufNewFile" },
+    config = function()
+      require("config.elixir-tools")
+    end,
+  },
+  {
+    "https://gitlab.com/itaranto/preview.nvim",
+    dependencies = {
+    "aklt/plantuml-syntax",
+    },
+    config = function()
+      require("config.preview")
+    end
+  },
+  {
+    "tpope/vim-projectionist", version = "*",
+  },
+  {
+    "yetone/avante.nvim",
+    cond = not vim.g.is_freebsd,
+    config = function()
+      require("config.avante")
+    end,
+    event = "VeryLazy",
+    version = "*",
+    build = "make",
+    dependencies = {
+      "nvim-treesitter/nvim-treesitter",
+      "stevearc/dressing.nvim",
+      "nvim-lua/plenary.nvim",
+      "MunifTanjim/nui.nvim",
+      --- The below dependencies are optional,
+      "echasnovski/mini.pick", -- for file_selector provider mini.pick
+      "nvim-telescope/telescope.nvim", -- for file_selector provider telescope
+      "hrsh7th/nvim-cmp", -- autocompletion for avante commands and mentions
+      "ibhagwan/fzf-lua", -- for file_selector provider fzf
+      "nvim-tree/nvim-web-devicons", -- or echasnovski/mini.icons
+      {
+        -- support for image pasting
+        "HakonHarnes/img-clip.nvim",
+        event = "VeryLazy",
+        opts = {
+          -- recommended settings
+          default = {
+            embed_image_as_base64 = false,
+            prompt_for_file_name = false,
+            drag_and_drop = {
+              insert_mode = true,
+            },
+            -- required for Windows users
+            use_absolute_path = true,
+          },
+        },
+      },
+      {
+        -- Make sure to set this up properly if you have lazy=true
+        'MeanderingProgrammer/render-markdown.nvim',
+        opts = {
+          file_types = { "markdown", "Avante" },
+        },
+        ft = { "markdown", "Avante" },
+      },
+    },
+  },
+-- Claude Code integration
+  {
+    "coder/claudecode.nvim",
+    cmd = { "ClaudeCode", "ClaudeChat" },
+    config = function()
+      require("config.claudecode")
+    end,
+  },
+  {
+  "teamtype/teamtype-nvim",
+  keys = {
+    { "<leader>ej", "<cmd>TeamtypeJumpToCursor<cr>" },
+    { "<leader>ef", "<cmd>TeamtypeFollow<cr>" },
+  },
+  lazy = false,
+  },
+  -- CodeCompanion - AI chat with multiple adapters
+  {
+    "olimorris/codecompanion.nvim",
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+      "nvim-treesitter/nvim-treesitter",
+    },
+    config = function()
+      require("config.codecompanion")
+    end,
+    event = "VeryLazy",
+  },
+  {
+    "nvim-orgmode/orgmode",
+    ft = {'org'},
+    dependencies = {
+      { "nvim-treesitter/nvim-treesitter", lazy = true },
+    },
+    event = "VeryLazy",
+    config = function()
+      require("config.orgmode")
     end,
   },
 }
