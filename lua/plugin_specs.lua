@@ -828,6 +828,7 @@ local plugin_specs = {
   },
   {
     "yetone/avante.nvim",
+    cond = not vim.g.is_freebsd,
     config = function()
       require("config.avante")
     end,
