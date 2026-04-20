@@ -2,7 +2,13 @@ require('preview').setup({
   previewers_by_ft = {
    plantuml = {
       name = 'plantuml_svg',
-      renderer = { type = 'imv' },
+      renderer = {
+        type = 'command',
+        opts = {
+          cmd = { 'feh', '--auto-reload' },
+          ext = 'svg',
+        },
+      },
     },
   },
   previewers = {
