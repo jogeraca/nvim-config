@@ -5,7 +5,7 @@ require('preview').setup({
       renderer = {
         type = 'command',
         opts = {
-          cmd = { 'feh', '--auto-reload' },
+          cmd = { 'pqiv', '--background-pattern=white','--watch-files=on' },
           ext = 'svg',
         },
       },
@@ -17,4 +17,12 @@ require('preview').setup({
     },
   },
   render_on_write = true,
+})
+
+vim.api.nvim_create_autocmd({ 'BufEnter', 'BufWritePre' }, {
+  group = vim.api.nvim_create_augroup('PlantumlIncludePath', {}),
+  pattern = { '*.puml', '*.plantuml', '*.iuml' },
+  callback = function(args)
+    vim.env.PLANTUML_INCLUDE_PATH = vim.fn.fnamemodify(args.file, ':p:h')
+  end,
 })
