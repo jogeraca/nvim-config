@@ -61,6 +61,31 @@ end
 -- vim.cmd("autocmd FileType elixir highlight ElixirFunction gui=italic,bold")
 vim.api.nvim_set_hl(0, "ElixirFunction", {italic = true, bold = true})
 
+-- Italicize only Elixir keywords (def, defmodule, do, end, if, for, etc.).
+-- Module names and identifiers are left untouched.
+-- Re-applied on every ColorScheme load so it survives theme switches.
+local elixir_keyword_groups = {
+  "@keyword.elixir",
+  "@keyword.function.elixir",
+  "@keyword.conditional.elixir",
+  "@keyword.repeat.elixir",
+  "@keyword.exception.elixir",
+  "@keyword.operator.elixir",
+  "@keyword.import.elixir",
+  "@keyword.return.elixir",
+  "@keyword.coroutine.elixir",
+}
+local function italicize_elixir_keywords()
+  for _, group in ipairs(elixir_keyword_groups) do
+    vim.api.nvim_set_hl(0, group, { italic = true })
+  end
+end
+vim.api.nvim_create_autocmd("ColorScheme", {
+  group = vim.api.nvim_create_augroup("ElixirItalicKeywords", { clear = true }),
+  callback = italicize_elixir_keywords,
+})
+italicize_elixir_keywords()
+
 local elixirls = require("elixir.elixirls")
 
 require("elixir").setup({
