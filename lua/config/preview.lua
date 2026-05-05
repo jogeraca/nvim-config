@@ -1,11 +1,11 @@
-require('preview').setup({
+local preview_opts = {
   previewers_by_ft = {
    plantuml = {
       name = 'plantuml_svg',
       renderer = {
         type = 'command',
         opts = {
-          cmd = { 'pqiv', '--background-pattern=white','--watch-files=on' },
+          cmd = { 'swayimg' },
           ext = 'svg',
         },
       },
@@ -17,7 +17,8 @@ require('preview').setup({
     },
   },
   render_on_write = true,
-})
+}
+
 
 vim.api.nvim_create_autocmd({ 'BufEnter', 'BufWritePre' }, {
   group = vim.api.nvim_create_augroup('PlantumlIncludePath', {}),
