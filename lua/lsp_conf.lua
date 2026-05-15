@@ -153,6 +153,7 @@ local enabled_lsp_servers = {
   -- spelling/typo check
   typos_lsp = { exe = "typos-lsp", optional = true },
   expert = "expert",
+  expert = { exe = "expert", optional = true },
 }
 
 
@@ -170,8 +171,8 @@ vim.lsp.config('expert', {
   },
 })
 
-for server_name, lsp_executable in pairs(enabled_lsp_servers) do
-  if utils.executable(lsp_executable) then
+for server_name, server_info in pairs(enabled_lsp_servers) do
+  if utils.executable(server_info.exe) then
     vim.lsp.enable(server_name)
   else
     -- only warn about missing non-optional LSP to avoid noise
