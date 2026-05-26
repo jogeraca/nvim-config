@@ -19,6 +19,7 @@ local preview_opts = {
   render_on_write = true,
 }
 
+require('preview').setup(preview_opts)
 
 vim.api.nvim_create_autocmd({ 'BufEnter', 'BufWritePre' }, {
   group = vim.api.nvim_create_augroup('PlantumlIncludePath', {}),
