@@ -154,6 +154,7 @@ local enabled_lsp_servers = {
   typos_lsp = { exe = "typos-lsp", optional = true },
   expert = "expert",
   expert = { exe = "expert", optional = true },
+  harper_ls = { exe = "harper-ls", optional = true },
 }
 
 
