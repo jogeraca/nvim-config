@@ -9,3 +9,15 @@ func $1($2) $3 {
 	$4
 }
 endsnippet
+
+snippet iferr "error handling" b
+if err != nil {
+	$1
+}
+endsnippet
+
+snippet range "for range enumeration" b
+for $1, $2 := range $3 {
+	$4
+}
+endsnippet
