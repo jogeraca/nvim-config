@@ -63,8 +63,8 @@ vim.api.nvim_create_autocmd("LspAttach", {
     map("n", "K", function()
       vim.lsp.buf.hover {
         border = "single",
-        max_height = 20,
-        max_width = 130,
+        max_height = 40,
+        max_width = 100,
         close_events = { "CursorMoved", "BufLeave", "WinLeave", "LSPDetach" },
       }
     end)
