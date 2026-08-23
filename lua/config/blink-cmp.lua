@@ -8,7 +8,7 @@ require("blink.cmp").setup {
     preset = "default",
     ["<Tab>"] = { "select_next", "fallback" },
     ["<S-Tab>"] = { "select_prev", "fallback" },
-    ["<Enter>"] = { "select_and_accept", "fallback" },
+    ["<CR>"] = { "select_and_accept", "fallback" },
     ["<C-U>"] = { "scroll_documentation_up", "fallback" },
     ["<C-D>"] = { "scroll_documentation_down", "fallback" },
   },
@@ -21,6 +21,9 @@ require("blink.cmp").setup {
 
   -- (Default) Only show the documentation popup when manually triggered
   completion = {
+    menu = {
+      winhighlight = "Normal:BlinkCmpMenu,FloatBorder:FloatBorder,CursorLine:BlinkCmpMenuSelection,Search:None",
+    },
     documentation = {
       auto_show = true,
     },
@@ -94,7 +97,7 @@ require("blink.cmp").setup {
       },
     },
     keymap = {
-      ["<Enter>"] = { "select_and_accept", "fallback" },
+      ["<CR>"] = { "accept_and_enter", "fallback" },
     },
   },
 }
