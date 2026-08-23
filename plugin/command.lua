@@ -43,26 +43,27 @@ vim.api.nvim_create_user_command("JSONFormat", function(context)
   local line1 = context["line1"]
   local line2 = context["line2"]
 
-  local python_name = nil
+  local python_cmd = nil
+
   if utils.executable("python3") then
-    python_name = "python3"
+    python_cmd = "python3"
   elseif utils.executable("python") then
-    python_name = "python"
+    python_cmd = "python"
   else
-    vim.print("No python command found")
+    vim.print("No python executable found")
     return
   end
 
   if range == 0 then
     -- the command is invoked without range, then we assume whole buffer
-    local cmd_str = string.format("%s,%s!%s -m json.tool", line1, line2, python_name)
+    local cmd_str = string.format("%s,%s!%s -m json.tool --indent 2", line1, line2, python_cmd)
     vim.fn.execute(cmd_str)
   elseif range == 2 then
     -- the command is invoked with some range
     -- for this to work, the mapping has to call this command with `:JSONFormat`,
     -- <cmd>JSONFormat won't work, the range can not be passed with `<cmd>`.
     -- See also: https://www.reddit.com/r/neovim/comments/17xxehz/how_to_correctly_get_line_ranges_from_command/
-    local cmd_str = string.format("%s,%s!%s -m json.tool", line1, line2, python_name)
+    local cmd_str = string.format("%s,%s!%s -m json.tool --indent 2", line1, line2, python_cmd)
     vim.fn.execute(cmd_str)
   else
     local msg = string.format("unsupported range: %s", range)
