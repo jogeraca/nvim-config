@@ -32,8 +32,13 @@ require("blink.cmp").setup {
   -- Default list of enabled providers defined so that you can extend it
   -- elsewhere in your config, without redefining it, due to `opts_extend`
   sources = {
-    default = { "lsp", "path", "buffer", "omni" },
+    default = { "lsp", "path", "buffer", "ultisnips" },
     providers = {
+      ultisnips = {
+        -- IMPORTANT: use the same name as you would for nvim-cmp
+        name = "ultisnips",
+        module = "blink.compat.source",
+      },
       -- Use the thesaurus source
       thesaurus = {
         name = "blink-cmp-words",
