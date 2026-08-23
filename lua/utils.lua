@@ -131,4 +131,37 @@ function M.get_virtual_env()
   return venv_name
 end
 
+--- Get the current project root directory
+--- @return string | nil
+function M.get_proj_root()
+  local project_marker = { ".git", "pyproject.toml" }
+  local project_root = vim.fs.root(0, project_marker)
+
+  return project_root
+end
+
+--- Get python virtual env
+--- @return string | nil
+function M.get_py_env()
+  local project_root = M.get_proj_root()
+  if project_root == nil then
+    vim.print("Can not find project root!")
+    return
+  end
+
+  local venv_name = M.get_virtual_env()
+
+  if venv_name ~= "" then
+    return "plain_venv"
+  end
+
+  -- check if this is uv-managed project
+  local uv_lock_path = vim.fs.joinpath(project_root, "uv.lock")
+  if vim.uv.fs_stat(uv_lock_path) then
+    return "uv"
+  end
+
+  return ""
+end
+
 return M

@@ -16,35 +16,7 @@ opt.expandtab = true -- Expand tab to spaces so that tabs are spaces
 -- The following option is used to customize the option passed to ruff.
 vim.g.ruff_makeprg_params = ""
 
-local get_proj_root = function()
-  local project_marker = { ".git", "pyproject.toml" }
-  local project_root = vim.fs.root(0, project_marker)
-
-  return project_root
-end
-
-local get_py_env = function()
-  local project_root = get_proj_root()
-  if project_root == nil then
-    return
-  end
-
-  local venv_name = utils.get_virtual_env()
-
-  if venv_name ~= "" then
-    return "plain_venv"
-  end
-
-  -- check if this is uv-managed project
-  local uv_lock_path = vim.fs.joinpath(project_root, "uv.lock")
-  if vim.fn.filereadable(uv_lock_path) == 1 then
-    return "uv"
-  end
-
-  return ""
-end
-
-local py_env = get_py_env()
+local py_env = utils.get_py_env()
 
 if vim.fn.exists(":AsyncRun") == 2 then
   local py_cmd = "python"
