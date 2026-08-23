@@ -291,16 +291,9 @@ require("lualine").setup {
       },
       {
         "fileformat",
-        symbols = {
-          unix = "unix",
-          dos = "win",
-          mac = "mac",
-        },
       },
-      "filetype",
     },
     lualine_z = {
-      "location",
       "progress",
     },
   },
