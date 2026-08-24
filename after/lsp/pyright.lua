@@ -33,7 +33,7 @@ return {
       analysis = {
         autoSearchPaths = true,
         diagnosticMode = "workspace",
-        typeCheckingMode = "standard",
+        typeCheckingMode = "off",
         useLibraryCodeForTypes = true,
         -- we can this setting below to redefine some diagnostics
         diagnosticSeverityOverrides = {
