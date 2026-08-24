@@ -83,15 +83,6 @@ keymap.set("n", "<leader>sv", function()
   vim.print("Use ZR to restart nvim instead!")
 end)
 
-keymap.set("n", "ZR", function()
-  local current_buf_path = vim.fn.expand("%")
-  local restart_cmd = string.format("restart edit %s", current_buf_path)
-  vim.cmd(restart_cmd)
-end, {
-  silent = true,
-  desc = "Restart nvim",
-})
-
 -- Reselect the text that has just been pasted, see also https://stackoverflow.com/a/4317090/6064933.
 keymap.set("n", "<leader>v", "printf('`[%s`]', getregtype()[0])", {
   expr = true,
