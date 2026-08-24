@@ -118,8 +118,8 @@ opt.showbreak = "↪"
 -- List all matches and complete till longest common string
 opt.wildmode = "list:longest"
 
--- Minimum lines to keep above and below cursor when scrolling
-opt.scrolloff = 999
+-- Minimum lines to keep above and below cursor when scrolling down/up
+opt.scrolloff = 5
 
 -- Use mouse to select and resize windows, etc.
 opt.mouse = "n"
