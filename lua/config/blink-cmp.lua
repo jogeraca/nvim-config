@@ -102,7 +102,7 @@ require("blink.cmp").setup {
       },
     },
     keymap = {
-      ["<CR>"] = { "accept_and_enter", "fallback" },
+      ["<CR>"] = { "select_and_accept", "fallback" },
     },
   },
 }
