@@ -1,20 +1,12 @@
 local utils = require("utils")
+local symbol_icon = require("symbol_icon")
 
 local fn = vim.fn
 local opt = vim.opt
 local o = vim.o
 
 -- Change fillchars for folding, vertical split, end of buffer, and message separator
-opt.fillchars = {
-  fold = " ",
-  foldsep = " ",
-  foldopen = "",
-  foldclose = "",
-  vert = "│",
-  eob = " ",
-  msgsep = "‾",
-  diff = "╱",
-}
+opt.fillchars = symbol_icon.fillchars
 
 -- Split window below/right when creating horizontal/vertical windows
 opt.splitbelow = true
@@ -141,7 +133,7 @@ opt.history = 500 -- The number of command and search history to keep
 -- Use list mode and customized listchars
 opt.list = true
 opt.listchars = {
-  tab = "▸ ",
+  tab = "→ ",
   extends = "❯",
   precedes = "❮",
   nbsp = "␣",

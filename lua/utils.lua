@@ -164,4 +164,123 @@ function M.get_py_env()
   return ""
 end
 
+--- Get python command to run
+--- @return string | nil
+function M.get_py_cmd()
+  local py_cmd = nil
+
+  local py_env = M.get_py_env()
+  if py_env == "uv" then
+    py_cmd = "uv run python"
+  elseif M.executable("python") then
+    py_cmd = "python"
+  elseif M.executable("python3") then
+    py_cmd = "python3"
+  end
+
+  return py_cmd
+end
+
+---@param buf integer buf number
+---@return boolean
+function M.buf_writable(buf)
+  local is_readonly = vim.api.nvim_get_option_value("readonly", { buf = buf })
+  local is_modifiable = vim.api.nvim_get_option_value("modifiable", { buf = buf })
+  local buftype = vim.api.nvim_get_option_value("buftype", { buf = buf })
+
+  return not is_readonly and is_modifiable and buftype == ""
+end
+
+---Put element to the front of a list it exists in this list (This assumes that the list has
+---items)
+---
+---@param items string[] the list to reorder
+---@param ele string the element to put to the front
+---@return string[]
+function M.reorder_list_element(items, ele)
+  if not vim.list_contains(items, ele) then
+    return items
+  end
+
+  local new_items = {}
+  table.insert(new_items, ele)
+  for _, v in ipairs(items) do
+    if v ~= ele then
+      table.insert(new_items, v)
+    end
+  end
+
+  return new_items
+end
+
+---@class BranchInfo
+---@field local string[]
+---@field remote string[]
+
+---@param is_local boolean
+---@return string[]
+function M._get_branch(is_local)
+  local git_cmd = {}
+  if is_local then
+    git_cmd = { "git", "branch", "--list", "--format=%(refname:short)" }
+  else
+    git_cmd = {
+      "git",
+      "for-each-ref",
+      "--exclude=refs/remotes/*/HEAD",
+      "--format=%(refname:short)",
+      "refs/remotes/",
+    }
+  end
+
+  local result = vim.system(git_cmd, { text = true }):wait()
+  if result.code ~= 0 then
+    vim._log("error fetching git branch")
+  end
+
+  local branches = vim.split(result.stdout, "\n", { trimempty = true })
+  return branches
+end
+
+--- Get a list of local and remote branches
+---@return BranchInfo
+function M.get_git_branches()
+  return {
+    ["local"] = M._get_branch(true),
+    remote = M._get_branch(false),
+  }
+end
+
+--- Throttle a function run
+--- @param callback function
+--- @param delay_ms integer delay in milliseconds
+function M.throttle(callback, delay_ms)
+  --- @type integer
+  local start
+
+  return function(...)
+    local now = vim.uv.hrtime()
+
+    if start and (now - start) / 1e6 < delay_ms then
+      return
+    end
+
+    callback(...)
+    start = now
+  end
+end
+
+--- Get the file size in bytes
+--- @param fpath string the file path
+--- @return integer|nil # The file size in bytes, or nil if error happens or file does not exist
+function M.filesize(fpath)
+  local stat, _, _ = vim.uv.fs_stat(fpath)
+
+  if stat then
+    return stat.size
+  end
+
+  return nil
+end
+
 return M

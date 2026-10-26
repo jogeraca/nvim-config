@@ -111,7 +111,7 @@ api.nvim_create_autocmd({ "VimEnter" }, { callback = open_nvim_tree })
 
 -- Do not use smart case in command line mode, extracted from https://vi.stackexchange.com/a/16511/15292.
 api.nvim_create_augroup("dynamic_smartcase", { clear = true })
-api.nvim_create_autocmd("CmdLineEnter", {
+api.nvim_create_autocmd("CmdlineEnter", {
   group = "dynamic_smartcase",
   pattern = ":",
   callback = function()
@@ -119,7 +119,7 @@ api.nvim_create_autocmd("CmdLineEnter", {
   end,
 })
 
-api.nvim_create_autocmd("CmdLineLeave", {
+api.nvim_create_autocmd("CmdlineLeave", {
   group = "dynamic_smartcase",
   pattern = ":",
   callback = function()
@@ -130,7 +130,12 @@ api.nvim_create_autocmd("CmdLineLeave", {
 api.nvim_create_autocmd("TermOpen", {
   group = api.nvim_create_augroup("term_start", { clear = true }),
   pattern = "*",
-  callback = function()
+  callback = function(args)
+    -- for the ansi preview buffer, insert is not possible
+    if vim.b[args.buf].ansi_preview then
+      return
+    end
+
     -- Do not use number and relative number for terminal inside nvim
     vim.wo.relativenumber = false
     vim.wo.number = false
@@ -237,10 +242,12 @@ api.nvim_create_autocmd("BufReadPre", {
   pattern = "*",
   desc = "optimize for large file",
   callback = function(ev)
-    local file_size_limit = 524288 -- 0.5MB
-    local f = ev.file
+    local file_size_limit = 4.0 -- unit in MB
+    local fpath = ev.file
 
-    if fn.getfsize(f) > file_size_limit or fn.getfsize(f) == -2 then
+    local filesize = utils.filesize(fpath)
+
+    if filesize and filesize / (1024 * 1024) > file_size_limit then
       vim.o.eventignore = "all"
 
       -- show ruler
@@ -296,13 +303,30 @@ api.nvim_create_autocmd("BufWritePost", {
 api.nvim_create_autocmd({ "InsertLeave", "TextChanged" }, {
   group = api.nvim_create_augroup("auto_save", { clear = true }),
   pattern = { "*" },
+  nested = true,
   desc = "Auto save current file",
   callback = function(ev)
-    local is_readonly = vim.api.nvim_get_option_value("readonly", { buf = ev.buf })
-    local is_modifiable = vim.api.nvim_get_option_value("modifiable", { buf = ev.buf })
-
-    if not is_readonly and is_modifiable then
+    if utils.buf_writable(ev.buf) then
       vim.cmd([[silent! update]])
     end
   end,
 })
+
+api.nvim_create_autocmd("FileType", {
+  group = api.nvim_create_augroup("vertical_help", { clear = true }),
+  pattern = "help",
+  desc = "Show help in vertical window",
+  callback = function(_)
+    -- L means to put window to leftmost
+    vim.cmd.wincmd([[L]])
+  end,
+})
+
+-- custom commands
+vim.api.nvim_create_user_command("Rg", function(opts)
+  require("fzf-lua").grep({ search = opts.args, no_esc = true })
+end, { nargs = 1 })
+
+vim.api.nvim_create_user_command("Rgex", function(opts)
+  require("fzf-lua").grep({ search = opts.args, no_esc = true, rg_opts = "--glob=*.ex" })
+end, { nargs = 1 })

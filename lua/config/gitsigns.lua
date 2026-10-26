@@ -1,14 +1,17 @@
 local gs = require("gitsigns")
+local symbol_icon = require("symbol_icon")
 
 gs.setup {
   signs = {
-    add = { text = "+" },
-    change = { text = "~" },
-    delete = { text = "_" },
-    topdelete = { text = "‾" },
-    changedelete = { text = "│" },
+    add = { text = symbol_icon.git.diff.added },
+    change = { text = symbol_icon.git.diff.modified },
+    delete = { text = symbol_icon.git.diff.delete },
+    topdelete = { text = symbol_icon.git.diff.topdelete },
+    changedelete = { text = symbol_icon.git.diff.changedelete },
   },
-  word_diff = false,
+  word_diff = true,
+  numhl = true, -- Toggle with `:Gitsigns toggle_numhl`
+  linehl = true, -- Toggle with `:Gitsigns toggle_linehl`
   on_attach = function(bufnr)
     local function map(mode, l, r, opts)
       opts = opts or {}
@@ -22,7 +25,7 @@ gs.setup {
         return "]c"
       end
       vim.schedule(function()
-        gs.next_hunk()
+        gs.nav_hunk("next")
       end)
       return "<Ignore>"
     end, { expr = true, desc = "next hunk" })
@@ -32,7 +35,7 @@ gs.setup {
         return "[c"
       end
       vim.schedule(function()
-        gs.prev_hunk()
+        gs.nav_hunk("prev")
       end)
       return "<Ignore>"
     end, { expr = true, desc = "previous hunk" })
@@ -42,6 +45,22 @@ gs.setup {
     map("n", "<leader>hb", function()
       gs.blame_line { full = true }
     end, { desc = "blame hunk" })
+
+    map({ "n", "v" }, "<leader>hs", ":Gitsigns stage_hunk<CR>")
+    map({ "n", "v" }, "<leader>hr", ":Gitsigns reset_hunk<CR>")
+    map("n", "<leader>hS", gs.stage_buffer)
+    map("n", "<leader>hu", gs.undo_stage_hunk)
+    map("n", "<leader>hR", gs.reset_buffer)
+    map("n", "<leader>tb", gs.toggle_current_line_blame)
+    map("n", "<leader>gr", gs.reset_hunk)
+    map("n", "<leader>hb", function()
+      gs.blame_line { full = true }
+    end)
+    map("n", "<leader>hd", gs.diffthis)
+    map("n", "<leader>hD", function()
+      gs.diffthis("~")
+    end)
+    map("n", "<leader>td", gs.toggle_deleted)
   end,
 }
 

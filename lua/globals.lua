@@ -1,5 +1,6 @@
 local utils = require("utils")
 
+-- python3_host_prog is needed for python plugins, see also https://jdhao.github.io/2026/05/11/nvim_python_provider_setup/
 local config_path = vim.fn.stdpath("config")
 local python3_path = vim.fs.joinpath(config_path, ".venv/bin/python3")
 if not vim.uv.fs_stat(python3_path) then
@@ -14,11 +15,19 @@ end
 ------------------------------------------------------------------------
 --                          custom variables                          --
 ------------------------------------------------------------------------
+local sysname = (vim.uv or vim.loop).os_uname().sysname
+
 vim.g.is_win = (utils.has("win32") or utils.has("win64")) and true or false
-vim.g.is_linux = (utils.has("unix") and (not utils.has("macunix"))) and true or false
 vim.g.is_mac = utils.has("macunix") and true or false
+vim.g.is_freebsd = sysname == "FreeBSD"
+vim.g.is_linux = utils.has("unix") and not vim.g.is_mac and not vim.g.is_freebsd
 
 vim.g.logging_level = vim.log.levels.INFO
+
+---@param msg string
+vim._log = function(msg)
+  vim.print(msg)
+end
 
 ------------------------------------------------------------------------
 --                         builtin variables                          --

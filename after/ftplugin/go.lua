@@ -12,7 +12,17 @@ vim.keymap.set("n", "<Space>f", function()
   vim.lsp.buf.format {
     async = false,
   }
-end, { buffer = true, silent = true })
+  -- The following code action requires gopls to be installed.
+  -- Install gopls with: go install golang.org/x/tools/gopls@latest
+  vim.lsp.buf.code_action {
+    context = { only = { "source.organizeImports" } },
+    apply = true,
+  }
+end, {
+  desc = "format file",
+  buffer = true,
+  silent = true,
+})
 
 vim.keymap.set("n", "<F9>", function()
   vim.cmd([[!go run %]])

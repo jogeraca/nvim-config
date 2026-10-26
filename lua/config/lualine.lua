@@ -1,5 +1,25 @@
 local utils = require("utils")
+local lsp_utils = require("lsp_utils")
+local symbol_icon = require("symbol_icon")
 local fn = vim.fn
+
+-- the timeout for running git related command
+local GIT_CMD_TIMEOUT_FETCH = 5000
+local GIT_CMD_TIMEOUT_OTHER = 200
+local GIT_STATUS_UPDATE_THROTTLE_DELAY = 1000 * 3
+
+local BRANCH_MAX_LEN = 30
+
+local function show_fileformat()
+  local fileformat = vim.api.nvim_get_option_value("fileformat", { buf = 0 })
+
+  -- do not show unix format, this is common, there is no value
+  if fileformat == "unix" then
+    return ""
+  end
+
+  return symbol_icon.fileformat[fileformat]
+end
 
 -- cache for git states
 local git_status_cache = {
@@ -8,69 +28,82 @@ local git_status_cache = {
   ahead_count = 0,
 }
 
-local on_exit_fetch = function(result)
-  if result.code == 0 then
-    git_status_cache.fetch_success = true
-  end
-end
-
-local function handle_numeric_result(cache_key)
-  return function(result)
-    if result.code == 0 then
-      git_status_cache[cache_key] = tonumber(result.stdout:match("(%d+)")) or 0
-    else
-      -- when the git command fails, it usually means there are some changes in your branch. For example, you
-      -- on branchA, for this one, you have upstream branch. Then you changed to branchB, and there is no upstream
-      -- branch, the git rev-list command will error out. In this case, we should clear the cache
-      -- vim.print("Error running git command", result)
-      git_status_cache[cache_key] = 0
-    end
-  end
-end
-
-local async_cmd = function(cmd_str, on_exit)
+--- @param cmd_str string the command to run
+--- @param timeout integer timeout for running command, in milliseconds
+--- @param on_exit function callback function to run when finishing the command
+local async_cmd = function(cmd_str, timeout, on_exit)
   local cmd = vim.tbl_filter(function(element)
     return element ~= ""
   end, vim.split(cmd_str, " "))
 
-  vim.system(cmd, { text = true }, on_exit)
+  vim.system(cmd, { text = true, timeout = timeout }, on_exit)
+end
+
+--- @param result vim.SystemCompleted
+local function update_ahead_behind_info(result)
+  if result.code == 0 then
+    local ahead, behind = result.stdout:match("^(%d+)%s+(%d+)%s*$")
+
+    ahead = tonumber(ahead) or 0
+    behind = tonumber(behind) or 0
+
+    git_status_cache.ahead_count = ahead
+    git_status_cache.behind_count = behind
+  else
+    -- when the git command fails, it usually means there are some changes in your branch. For example, you
+    -- on branchA, for this one, you have upstream branch. Then you changed to branchB, and there is no upstream
+    -- branch, the git rev-list command will error out. In this case, we should clear the cache
+    -- vim.print("Error running git command", result)
+    git_status_cache.ahead_count = 0
+    git_status_cache.behind_count = 0
+  end
+end
+
+--- @param result vim.SystemCompleted
+local on_exit_fetch = function(result)
+  if result.code == 0 then
+    git_status_cache.fetch_success = true
+  end
+
+  if git_status_cache.fetch_success then
+    -- Get the number of commits ahead and behind
+    -- the @{upstream} notation is inspired by post: https://www.reddit.com/r/neovim/s/OWNFzqE7nO
+
+    -- this shows the ahead and behind info in one line in this format: `<ahead><tab><behin>`
+    local ahead_behind_cmd = "git rev-list --left-right --count HEAD...@{upstream}"
+    async_cmd(ahead_behind_cmd, GIT_CMD_TIMEOUT_OTHER, update_ahead_behind_info)
+  end
 end
 
 local async_git_status_update = function()
   -- Fetch the latest changes from the remote repository (replace 'origin' if needed)
-  async_cmd("git fetch origin", on_exit_fetch)
+  async_cmd("git fetch origin", GIT_CMD_TIMEOUT_FETCH, on_exit_fetch)
+
   if not git_status_cache.fetch_success then
     return
   end
-
-  -- Get the number of commits behind
-  -- the @{upstream} notation is inspired by post: https://www.reddit.com/r/neovim/comments/t48x5i/git_branch_aheadbehind_info_status_line_component/
-  -- note that here we should use double dots instead of triple dots
-  local behind_cmd_str = "git rev-list --count HEAD..@{upstream}"
-  async_cmd(behind_cmd_str, handle_numeric_result("behind_count"))
-
-  -- Get the number of commits ahead
-  local ahead_cmd_str = "git rev-list --count @{upstream}..HEAD"
-  async_cmd(ahead_cmd_str, handle_numeric_result("ahead_count"))
 end
 
+-- slow down the pace of calling git update, this is an expensive operation
+local throttled_git_update =
+  utils.throttle(async_git_status_update, GIT_STATUS_UPDATE_THROTTLE_DELAY)
+
 local function get_git_ahead_behind_info()
-  async_git_status_update()
+  throttled_git_update()
 
   local status = git_status_cache
-  if not status then
-    return ""
-  end
 
   local msg = ""
 
-  if type(status.ahead_count) == "number" and status.ahead_count > 0 then
-    local ahead_str = string.format("↑[%d] ", status.ahead_count)
+  local ahead_cnt = status.ahead_count
+  if ahead_cnt > 0 then
+    local ahead_str = string.format("%s[%d] ", symbol_icon.git.commit.ahead, ahead_cnt)
     msg = msg .. ahead_str
   end
 
-  if type(status.behind_count) == "number" and status.behind_count > 0 then
-    local behind_str = string.format("↓[%d] ", status.behind_count)
+  local behind_cnt = status.behind_count
+  if behind_cnt > 0 then
+    local behind_str = string.format("%s[%d] ", symbol_icon.git.commit.behind, behind_cnt)
     msg = msg .. behind_str
   end
 
@@ -96,7 +129,7 @@ local function ime_state()
     -- mode for Rime: im.rime.inputmethod.Squirrel.Rime
     local res = fn.match(layout, [[\v(Squirrel\.Rime|SCIM.ITABC)]])
     if res ~= -1 then
-      return "[CN]"
+      return symbol_icon.IME.chinese
     end
   end
 
@@ -104,6 +137,11 @@ local function ime_state()
 end
 
 local function trailing_space()
+  local r = vim.api.nvim_get_mode()
+  if r.mode == "i" then
+    return ""
+  end
+
   if not vim.o.modifiable then
     return ""
   end
@@ -127,6 +165,18 @@ local function trailing_space()
   end
 
   return msg
+end
+
+local function show_encoding()
+  local fileencoding = vim.api.nvim_get_option_value("fileencoding", { buf = 0 })
+  -- normalize the format
+  fileencoding = string.upper(fileencoding)
+
+  if fileencoding ~= "UTF-8" then
+    return fileencoding
+  else
+    return ""
+  end
 end
 
 local function mixed_indent()
@@ -178,24 +228,20 @@ local virtual_env = function()
   local venv_name = utils.get_virtual_env()
 
   if venv_name ~= "" then
-    return string.format(" (%s)", venv_name)
+    return string.format("%s (%s)", symbol_icon.python, venv_name)
   else
     return ""
   end
 end
 
 local get_active_lsp = function()
-  local msg = "🚫"
-  local clients = vim.lsp.get_clients { bufnr = 0 }
-  if next(clients) == nil then
-    return msg
+  local lsp_names_unordered = lsp_utils.get_attached_lsp()
+  if next(lsp_names_unordered) == nil then
+    return symbol_icon.lsp.not_exist
   end
 
-  local client_names = {}
-  for _, client in ipairs(clients) do
-    local client_name = client.name
-    table.insert(client_names, client_name)
-  end
+  local main_lsp = lsp_utils.main_lsp_by_filetype[vim.bo.filetype]
+  local client_names = utils.reorder_list_element(lsp_names_unordered, main_lsp)
 
   local cnt = #client_names
   local lsp_infos = nil
@@ -208,15 +254,141 @@ local get_active_lsp = function()
   return lsp_infos
 end
 
+local show_branch_menu = function()
+  local Menu = require("nui.menu")
+
+  local height = 5
+  local win_height = vim.api.nvim_win_get_height(0)
+
+  local pos_col = 10
+  local pos_row = win_height - height - 2
+
+  --- @type nui_popup_options
+  local popup_options = {
+    relative = "win",
+    position = {
+      row = pos_row,
+      col = pos_col,
+    },
+    size = {
+      width = 50,
+      height = 5,
+    },
+    border = {
+      style = "single",
+      text = {
+        top = "[Git branches]",
+        top_align = "center",
+      },
+    },
+    win_options = {
+      winhighlight = "Normal:Normal,FloatBorder:Normal",
+    },
+  }
+
+  local branch_info = utils.get_git_branches()
+  local local_branches = branch_info["local"]
+  local remote_branches = branch_info["remote"]
+
+  if #local_branches == 0 and #remote_branches == 0 then
+    return
+  end
+
+  local menu_items = {}
+  local branches_l = vim
+    .iter(local_branches)
+    :map(function(v)
+      return Menu.item(string.format(" %s %s", symbol_icon.git.branch, v), { is_local = true })
+    end)
+    :totable()
+
+  vim.list_extend(menu_items, branches_l)
+
+  table.insert(
+    menu_items,
+    Menu.separator("Remote", {
+      char = "-",
+      text_align = "center",
+    })
+  )
+
+  local branches_r = vim
+    .iter(remote_branches)
+    :map(function(v)
+      return Menu.item(string.format(" %s %s", symbol_icon.git.branch, v), { is_local = false })
+    end)
+    :totable()
+  vim.list_extend(menu_items, branches_r)
+
+  local menu_options = {
+    lines = menu_items,
+    max_width = 30,
+    keymap = {
+      focus_next = { "j", "<Down>", "<Tab>" },
+      focus_prev = { "k", "<Up>", "<S-Tab>" },
+      close = { "<Esc>", "<C-c>", "q" },
+      submit = { "<CR>", "<Space>" },
+    },
+    on_close = function()
+      print("Menu Closed!")
+    end,
+    on_submit = function(item)
+      ---@type string
+      local branch_name = item.text
+
+      ---@type boolean
+      local is_local = item.is_local
+
+      local cmd = {}
+      if is_local then
+        cmd = { "git", "checkout", branch_name }
+      else
+        cmd = { "git", "checkout", "--track", branch_name }
+      end
+
+      local r = vim.system(cmd, { text = true }):wait()
+      if r.code ~= 0 then
+        vim._log("failed to switch branch:")
+        vim._log(r.stderr)
+      end
+    end,
+  }
+
+  local menu = Menu(popup_options, menu_options)
+
+  -- mount the component
+  menu:mount()
+end
+
+local show_lsp_menu = function()
+  local size = {
+    width = 20,
+    height = 5,
+  }
+
+  local win_width, win_height = vim.api.nvim_win_get_width(0), vim.api.nvim_win_get_height(0)
+
+  local pos_col = win_width - size.width - 5
+  local pos_row = win_height - size.height - 2
+
+  local position = {
+    col = pos_col,
+    row = pos_row,
+  }
+
+  lsp_utils.show_lsp_menu(size, position)
+end
+
 require("lualine").setup {
   options = {
     icons_enabled = true,
     theme = "auto",
-    component_separators = { left = "|", right = "|" },
-    section_separators = "",
+    component_separators = symbol_icon.statusline.component_separators,
+    section_separators = symbol_icon.statusline.section_separators,
     disabled_filetypes = {},
-    always_divide_middle = true,
+    always_divide_middle = false,
     refresh = {
+      -- refresh statusline every 1000 milliseconds
       statusline = 1000,
     },
   },
@@ -225,30 +397,34 @@ require("lualine").setup {
       {
         "filename",
         symbols = {
-          readonly = "[🔒]",
+          readonly = symbol_icon.file.readonly,
         },
       },
     },
     lualine_b = {
       {
         "branch",
+        icon = symbol_icon.git.branch,
         fmt = function(name, _)
           -- truncate branch name in case the name is too long
-          return string.sub(name, 1, 20)
+          return string.sub(name, 1, BRANCH_MAX_LEN)
         end,
         color = { gui = "italic,bold" },
+        on_click = show_branch_menu,
       },
       {
         get_git_ahead_behind_info,
-        color = { fg = "#E0C479" },
       },
       {
         "diff",
+        symbols = symbol_icon.git.diff,
         source = diff,
       },
       {
-        virtual_env,
-        color = { fg = "black", bg = "#F1CA81" },
+        "diagnostics",
+        sources = { "nvim_diagnostic" },
+        symbols = symbol_icon.diagnostic,
+        color = { gui = "bold" },
       },
     },
     lualine_c = {
@@ -257,24 +433,16 @@ require("lualine").setup {
         color = { fg = "black", bg = "#f46868" },
       },
       {
-        "%S",
-        color = { gui = "bold", fg = "cyan" },
-      },
-      {
         spell,
         color = { fg = "black", bg = "#a7c080" },
       },
+      {
+        -- show currently typed command in statusline
+        "%S",
+        color = { gui = "bold", fg = "cyan" },
+      },
     },
     lualine_x = {
-      {
-        get_active_lsp,
-        icon = "📡",
-      },
-      {
-        "diagnostics",
-        sources = { "nvim_diagnostic" },
-        symbols = { error = "🆇 ", warn = "⚠️ ", info = "ℹ️ ", hint = " " },
-      },
       {
         trailing_space,
         color = "WarningMsg",
@@ -283,18 +451,28 @@ require("lualine").setup {
         mixed_indent,
         color = "WarningMsg",
       },
+      {
+        get_active_lsp,
+        icon = symbol_icon.lsp.icon,
+        on_click = show_lsp_menu,
+      },
     },
     lualine_y = {
       {
-        "encoding",
-        fmt = string.upper,
+        show_encoding,
+        color = "ErrorMsg",
       },
       {
-        "fileformat",
+        show_fileformat,
+        color = "ErrorMsg",
       },
     },
     lualine_z = {
       "progress",
+      {
+        virtual_env,
+        color = { fg = "black", bg = "#F1CA81" },
+      },
     },
   },
   inactive_sections = {
